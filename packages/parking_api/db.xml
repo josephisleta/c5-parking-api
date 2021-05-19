@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.concrete5.org/doctrine-xml/0.5"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.concrete5.org/doctrine-xml/0.5 http://concrete5.github.io/doctrine-xml/doctrine-xml-0.5.xsd">
+
+    <table name="parkingMap">
+        <field name="id" type="integer">
+            <unsigned/>
+            <autoincrement/>
+            <key/>
+        </field>
+        <field name="entryOrExitQuantity" type="integer">
+            <unsigned/>
+            <default value="3" />
+        </field>
+        <field name="dateAdded" type="datetime">
+            <deftimestamp/>
+            <notnull/>
+        </field>
+    </table>
+
+    <table name="parkingSlots">
+        <field name="id" type="integer">
+            <unsigned/>
+            <autoincrement/>
+            <key/>
+        </field>
+        <field name="type" type="string" size="2" />
+        <field name="distancePoints" type="string" size="100" />
+        <field name="isAvailable" type="boolean">
+            <default value="1" />
+        </field>
+    </table>
+
+    <table name="vehicles">
+        <field name="plateNumber" type="string" size="14">
+            <unsigned/>
+            <key/>
+        </field>
+        <field name="type" type="string" size="2" />
+        <field name="color" type="string" size="30" />
+    </table>
+
+    <table name="parkingSlip">
+        <field name="id" type="integer">
+            <unsigned/>
+            <autoincrement/>
+            <key/>
+        </field>
+        <field name="parkingSlotId" type="integer">
+            <unsigned/>
+        </field>
+        <field name="plateNumber" type="string" size="14">
+            <unsigned/>
+        </field>
+        <field name="entryTime" type="datetime">
+            <deftimestamp/>
+            <notnull/>
+        </field>
+        <field name="exitTime" type="datetime" />
+        <field name="fee" type="float" />
+    </table>
+
+</schema>

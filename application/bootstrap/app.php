@@ -60,3 +60,23 @@
  *
  * ----------------------------------------------------------------------------
  */
+
+Route::register(
+    '/api/parking',
+    'Concrete\Package\ParkingApi\Controller\Route\Parking::getParkingInfo'
+);
+
+Route::register(
+    '/api/parking/slots',
+    'Concrete\Package\ParkingApi\Controller\Route\Parking::getParkingSlots'
+);
+
+Route::register(
+    '/api/parking/enter',
+    'Concrete\Package\ParkingApi\Controller\Route\Parking::enterParking'
+);
+
+Route::register(
+    '/api/parking/exit',
+    'Concrete\Package\ParkingApi\Controller\Route\Parking::exitParking'
+);
