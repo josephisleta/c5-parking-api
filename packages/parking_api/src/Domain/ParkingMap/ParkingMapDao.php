@@ -2,6 +2,10 @@
 
 namespace Concrete\Package\ParkingApi\Src\Domain\ParkingMap;
 
+/**
+ * Interface ParkingMapDao
+ * @package Concrete\Package\ParkingApi\Src\Domain\ParkingMap
+ */
 interface ParkingMapDao
 {
     /**

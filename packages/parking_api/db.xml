@@ -41,7 +41,7 @@
         <field name="color" type="string" size="30" />
     </table>
 
-    <table name="parkingSlip">
+    <table name="parkingSlips">
         <field name="id" type="integer">
             <unsigned/>
             <autoincrement/>
