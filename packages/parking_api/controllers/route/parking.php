@@ -5,7 +5,6 @@ namespace Concrete\Package\ParkingApi\Controller\Route;
 use Concrete\Core\Controller\Controller;
 use Concrete\Package\ParkingApi\Src\Domain\Parking\ParkingService;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMapService;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingSlips\ParkingFee;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlotsService;
 use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingMissingArgumentException;
 
@@ -45,7 +44,7 @@ class Parking extends Controller
         $parkingSlotsService = new ParkingSlotsService();
 
         $data = [
-            'parkingSlots' => $parkingSlotsService->getParkingSlotsArray(),
+            'parkingSlots' => $parkingSlotsService->getParkingSlotsWithDetails()->toArray(),
             'status' => 200
         ];
 
@@ -112,7 +111,7 @@ class Parking extends Controller
             $parkingSlip = $parkingService->unPark($this->get('parkingSlotId'));
 
             $data = [
-                'parkingFee' => $parkingSlip->getFee(),
+                'parkingSlip' => $parkingSlip->toArray(),
                 'status' => 200
             ];
         } catch (\Exception $e) {

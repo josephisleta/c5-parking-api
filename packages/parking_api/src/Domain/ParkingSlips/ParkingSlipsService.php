@@ -4,18 +4,28 @@ namespace Concrete\Package\ParkingApi\Src\Domain\ParkingSlips;
 
 use Concrete\Package\ParkingApi\Src\Dao\ParkingSlips\ParkingSlipDaoImpl;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingFee\ParkingFeeService;
-use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlipsException;
 use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlotTypeInvalidException;
 
+/**
+ * Class ParkingSlipsService
+ * @package Concrete\Package\ParkingApi\Src\Domain\ParkingSlips
+ */
 class ParkingSlipsService
 {
     private $parkingSlipsDao;
 
+    /**
+     * ParkingSlipsService constructor.
+     */
     public function __construct()
     {
         $this->parkingSlipsDao = new ParkingSlipDaoImpl();
     }
 
+    /**
+     * @param $parkingSlotId
+     * @param $plateNumber
+     */
     public function add($parkingSlotId, $plateNumber)
     {
         $parkingSlip = new ParkingSlip();
@@ -31,21 +41,7 @@ class ParkingSlipsService
      */
     public function getByPlateNumber($plateNumber)
     {
-        $daoResult = $this->parkingSlipsDao->getByPlateNumber($plateNumber);
-
-        return new ParkingSlips($daoResult);
-    }
-
-    public function hasOngoingParkingSlip($plateNumber)
-    {
-        $parkingSlips = $this->getByPlateNumber($plateNumber);
-
-        if ($parkingSlips) {
-            $latestParkingSlip = $parkingSlips->getLatest();
-            if ($latestParkingSlip && !$latestParkingSlip->getExitTime()) {
-                throw new ParkingSlipsException('Vehicle has not exited the parking yet.');
-            }
-        }
+        return new ParkingSlips($this->parkingSlipsDao->getByPlateNumber($plateNumber));
     }
 
     /**
@@ -54,9 +50,7 @@ class ParkingSlipsService
      */
     public function getByParkingSlotId($parkingSlotId)
     {
-        $daoResult = $this->parkingSlipsDao->getByParkingSlotId($parkingSlotId);
-
-        return new ParkingSlips($daoResult);
+        return new ParkingSlips($this->parkingSlipsDao->getByParkingSlotId($parkingSlotId));
     }
 
     /**
@@ -69,8 +63,7 @@ class ParkingSlipsService
     {
         $parkingSlip->setExitTime(date('Y-m-d H:i:s'));
 
-        $parkingFeeService = new ParkingFeeService($parkingSlip->getEntryTime(), $parkingSlip->getExitTime());
-        $parkingFee = $parkingFeeService->build($parkingSlotType);
+        $parkingFee = ParkingFeeService::build($parkingSlip->getEntryTime(), $parkingSlip->getExitTime(), $parkingSlotType);
 
         $parkingSlip->setFee($parkingFee->get());
 

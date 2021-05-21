@@ -32,7 +32,7 @@ class Settings extends DashboardPageController
 
         $this->set('numberOfEntryExitPoints', $parkingMapService->getEntryOrExitQuantity() ?: ParkingMap::ENTRY_OR_EXIT_QUANTITY_DEFAULT);
 
-        $parkingSlots = $parkingSlotsService->getParkingSlotsArray();
+        $parkingSlots = $parkingSlotsService->getParkingSlots()->toArray();
         if ($parkingSlots) {
             $parkingSlots = json_encode($parkingSlots);
         } else {

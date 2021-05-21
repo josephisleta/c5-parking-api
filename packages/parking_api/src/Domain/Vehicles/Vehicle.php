@@ -72,4 +72,16 @@ class Vehicle
     {
         $this->color = $color;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'plateNumber' => $this->getPlateNumber(),
+            'type' => $this->getType(),
+            'color' => $this->getColor()
+        ];
+    }
 }

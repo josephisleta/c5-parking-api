@@ -128,6 +128,21 @@ class ParkingSlip
     }
 
     /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'parkingSlotId' => $this->getParkingSlotId(),
+            'plateNumber' => $this->getPlateNumber(),
+            'entryTime' => $this->getEntryTime(),
+            'exitTime' => $this->getExitTime(),
+            'fee' => $this->getFee()
+        ];
+    }
+
+    /**
      * @return bool
      */
     public function isOngoing()

@@ -2,6 +2,10 @@
 
 namespace Concrete\Package\ParkingApi\Src\Domain\ParkingFee;
 
+/**
+ * Class ParkingFee
+ * @package Concrete\Package\ParkingApi\Src\Domain\ParkingFee
+ */
 abstract class ParkingFee
 {
     protected $hours;

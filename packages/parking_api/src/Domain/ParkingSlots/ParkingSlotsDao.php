@@ -9,15 +9,20 @@ namespace Concrete\Package\ParkingApi\Src\Domain\ParkingSlots;
 interface ParkingSlotsDao
 {
     /**
+     * @param $id
+     * @return mixed
+     */
+    public function getById($id);
+
+    /**
      * @return mixed
      */
     public function getAll();
 
     /**
-     * @param string $type
      * @return mixed
      */
-    public function getAllByType($type);
+    public function getAllAvailable();
 
     /**
      * @param ParkingSlot $parkingSlot
@@ -36,4 +41,9 @@ interface ParkingSlotsDao
      * @return mixed
      */
     public function updateAvailability($id, $isAvailable);
+
+    /**
+     * @return mixed
+     */
+    public function getParkingSlotsDetail();
 }

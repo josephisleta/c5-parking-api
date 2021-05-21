@@ -18,11 +18,13 @@ class ParkingMap
      * ParkingMap constructor.
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct($data = [])
     {
-        $this->setId($data['id']);
-        $this->setEntryOrExitQuantity($data['entryOrExitQuantity']);
-        $this->setDateAdded($data['dateAdded']);
+        if ($data) {
+            $this->setId($data['id']);
+            $this->setEntryOrExitQuantity($data['entryOrExitQuantity']);
+            $this->setDateAdded($data['dateAdded']);
+        }
     }
 
     /**

@@ -64,4 +64,19 @@ class ParkingSlots
         return $nearestSlot;
     }
 
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $data = [];
+
+        /** @var ParkingSlot $parkingSlot */
+        foreach ($this->getAll() as $parkingSlot) {
+            $data[] = $parkingSlot->toArray();
+        }
+
+        return $data;
+    }
+
 }

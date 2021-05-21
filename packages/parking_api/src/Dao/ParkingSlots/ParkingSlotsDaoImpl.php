@@ -47,18 +47,6 @@ class ParkingSlotsDaoImpl implements ParkingSlotsDao
     }
 
     /**
-     * @param string $type
-     * @return mixed
-     */
-    public function getAllByType($type)
-    {
-        $queryStatement = "SELECT * FROM {$this->tableName} WHERE type = ?";
-        $queryParams = [$type];
-
-        return $this->db->executeQuery($queryStatement, $queryParams)->fetchAll();
-    }
-
-    /**
      * @return mixed
      */
     public function getAllAvailable()
@@ -104,5 +92,30 @@ class ParkingSlotsDaoImpl implements ParkingSlotsDao
         $queryParams = [$isAvailable, $id];
 
         $this->db->execute($queryStatement, $queryParams);
+    }
+
+    public function getParkingSlotsDetail()
+    {
+        $queryStatement = "SELECT slo.id, slo.type, slo.distancePoints, slo.isAvailable, v.plateNumber, v.type AS vehicleType, v.color, sli.id AS parkingSlipId, sli.entryTime
+                            FROM parkingSlots slo 
+                            LEFT JOIN vehicles v ON v.plateNumber = (
+                                SELECT sli.plateNumber
+                                FROM parkingSlip sli
+                                WHERE sli.parkingSlotId = slo.id
+                                AND sli.exitTime IS NULL
+                                ORDER BY sli.entryTime DESC
+                                LIMIT 1
+                            )
+                            LEFT JOIN parkingSlip sli ON sli.id = (
+                                SELECT sli.id
+                                FROM parkingSlip sli
+                                WHERE sli.plateNumber = v.plateNumber
+                                AND sli.exitTime IS NULL
+                                ORDER BY sli.entryTime DESC
+                                LIMIT 1
+                            )";
+        $queryParams = [];
+
+        return $this->db->executeQuery($queryStatement, $queryParams)->fetchAll();
     }
 }

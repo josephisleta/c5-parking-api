@@ -25,4 +25,5 @@ interface VehiclesDao
      * @return mixed
      */
     public function update($vehicle);
+
 }

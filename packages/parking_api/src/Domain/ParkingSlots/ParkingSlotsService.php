@@ -11,7 +11,6 @@ use Concrete\Package\ParkingApi\Src\Dao\ParkingSlots\ParkingSlotsDaoImpl;
 class ParkingSlotsService
 {
     private $parkingSlotsDao;
-    private $parkingSlotsHelper;
 
     /**
      * ParkingSlotsService constructor.
@@ -19,27 +18,22 @@ class ParkingSlotsService
     public function __construct()
     {
         $this->parkingSlotsDao = new ParkingSlotsDaoImpl();
-        $this->parkingSlotsHelper = new ParkingSlotsHelper();
     }
 
     /**
-     * @param string $type
      * @return ParkingSlots
      */
-    public function getParkingSlotsObject($type = '')
+    public function getParkingSlots()
     {
-        $daoResult = $type ? $this->parkingSlotsDao->getAllByType($type) : $this->parkingSlotsDao->getAll();
-
-        return new ParkingSlots($daoResult);
+        return new ParkingSlots($this->parkingSlotsDao->getAll());
     }
 
     /**
-     * @param string $type
-     * @return array
+     * @return ParkingSlots
      */
-    public function getParkingSlotsArray($type = '')
+    public function getParkingSlotsWithDetails()
     {
-        return $this->parkingSlotsHelper->toRawArray($this->getParkingSlotsObject($type));
+        return new ParkingSlots($this->parkingSlotsDao->getParkingSlotsDetail());
     }
 
     /**
