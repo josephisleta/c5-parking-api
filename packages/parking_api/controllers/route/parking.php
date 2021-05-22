@@ -41,12 +41,27 @@ class Parking extends Controller
      */
     public function getParkingSlots()
     {
-        $parkingSlotsService = new ParkingSlotsService();
+        try {
+            $parkingSlotsService = new ParkingSlotsService();
 
-        $data = [
-            'parkingSlots' => $parkingSlotsService->getParkingSlotsWithDetails()->toArray(),
-            'status' => 200
-        ];
+            if ($this->request('entryPoint')) {
+                $parkingMapService = new ParkingMapService();
+                $parkingMapService->checkIfValidEntryPoint($this->request('entryPoint'));
+                $parkingSlots = $parkingSlotsService->getParkingSlotsWithDetails()->sortByEntryPoint($this->request('entryPoint'))->toArray($this->request('entryPoint'));
+            } else {
+                $parkingSlots = $parkingSlotsService->getParkingSlotsWithDetails()->toArray();
+            }
+
+            $data = [
+                'parkingSlots' => $parkingSlots,
+                'status' => 200
+            ];
+        } catch (\Exception $e) {
+            $data = [
+                'errorMessage' => $e->getMessage(),
+                'status' => 300
+            ];
+        }
 
         echo json_encode($data);
         exit();
@@ -66,17 +81,17 @@ class Parking extends Controller
     public function enterParking()
     {
         try {
-            if (!$this->get('entryPoint') || !$this->get('plateNumber') || !$this->get('type')) {
+            if (!$this->request('entryPoint') || !$this->request('plateNumber') || !$this->request('type')) {
                 throw new ParkingMissingArgumentException('Please enter all required parameters');
             }
 
             $parkingService = new ParkingService();
 
             $parkingSlot = $parkingService->park(
-                $this->get('entryPoint'),
-                $this->get('plateNumber'),
-                $this->get('type'),
-                $this->get('color')
+                $this->request('entryPoint'),
+                $this->request('plateNumber'),
+                $this->request('type'),
+                $this->request('color')
             );
 
             $data = [

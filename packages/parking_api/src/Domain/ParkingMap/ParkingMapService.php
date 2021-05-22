@@ -3,6 +3,7 @@
 namespace Concrete\Package\ParkingApi\Src\Domain\ParkingMap;
 
 use Concrete\Package\ParkingApi\Src\Dao\ParkingMap\ParkingMapDaoImpl;
+use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingMapInvalidEntryPointException;
 
 /**
  * Class ParkingMapService
@@ -28,6 +29,19 @@ class ParkingMapService
         $parkingMap = new ParkingMap($this->parkingMapDao->getEntryOrExitQuantity());
 
         return $parkingMap->getEntryOrExitQuantity();
+    }
+
+    /**
+     * @param $entryPoint
+     * @throws ParkingMapInvalidEntryPointException
+     */
+    public function checkIfValidEntryPoint($entryPoint)
+    {
+        $entryPoints = $this->getEntryOrExitQuantity();
+
+        if ($entryPoint < 0 || $entryPoint > $entryPoints) {
+            throw new ParkingMapInvalidEntryPointException('Invalid entry point passed');
+        }
     }
 
     /**

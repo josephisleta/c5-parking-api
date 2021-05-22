@@ -154,14 +154,17 @@ class ParkingSlot
     }
 
     /**
+     * @param bool $entryPoint
      * @return array
      */
-    public function toArray()
+    public function toArray($entryPoint = false)
     {
+        $distancePoints = unserialize($this->getDistancePoints());
+
         $arr = [
             "id" => $this->getId(),
             "type" => $this->getType(),
-            "distancePoints" => unserialize($this->getDistancePoints()),
+            "distancePoints" => $entryPoint ? $distancePoints[$entryPoint - 1] : $distancePoints,
             "isAvailable" => $this->getIsAvailable(),
         ];
 

@@ -34,6 +34,24 @@ class ParkingSlots
 
     /**
      * @param $entryPoint
+     * @return $this
+     */
+    public function sortByEntryPoint($entryPoint)
+    {
+        uasort($this->data, function ($a, $b) use ($entryPoint) {
+            /** @var ParkingSlot $a */
+            $aDistancePoints = unserialize($a->getDistancePoints());
+            /** @var ParkingSlot $b */
+            $bDistancePoints = unserialize($b->getDistancePoints());
+
+            return $aDistancePoints[$entryPoint - 1] <=> $bDistancePoints[$entryPoint - 1];
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param $entryPoint
      * @param $vehicleType
      * @return ParkingSlot|mixed|null
      */
@@ -65,15 +83,16 @@ class ParkingSlots
     }
 
     /**
+     * @param bool $entryPoint
      * @return array
      */
-    public function toArray()
+    public function toArray($entryPoint = false)
     {
         $data = [];
 
         /** @var ParkingSlot $parkingSlot */
-        foreach ($this->getAll() as $parkingSlot) {
-            $data[] = $parkingSlot->toArray();
+        foreach ($this->data as $parkingSlot) {
+            $data[] = $parkingSlot->toArray($entryPoint);
         }
 
         return $data;
