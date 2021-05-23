@@ -2,8 +2,6 @@
 
 namespace Concrete\Package\ParkingApi\Src\Domain\Vehicles;
 
-use Concrete\Package\ParkingApi\Src\Dao\Vehicles\VehiclesDaoImpl;
-
 /**
  * Class VehiclesService
  * @package Concrete\Package\ParkingApi\Src\Domain\Vehicles
@@ -14,10 +12,11 @@ class VehiclesService
 
     /**
      * VehiclesService constructor.
+     * @param VehiclesDao $vehiclesDao
      */
-    public function __construct()
+    public function __construct(VehiclesDao $vehiclesDao)
     {
-        $this->vehiclesDao = new VehiclesDaoImpl();
+        $this->vehiclesDao = $vehiclesDao;
     }
 
     /**

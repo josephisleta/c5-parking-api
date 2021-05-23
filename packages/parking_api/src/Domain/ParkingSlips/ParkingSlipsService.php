@@ -2,7 +2,6 @@
 
 namespace Concrete\Package\ParkingApi\Src\Domain\ParkingSlips;
 
-use Concrete\Package\ParkingApi\Src\Dao\ParkingSlips\ParkingSlipDaoImpl;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingFee\ParkingFeeService;
 use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlotTypeInvalidException;
 
@@ -16,10 +15,11 @@ class ParkingSlipsService
 
     /**
      * ParkingSlipsService constructor.
+     * @param ParkingSlipsDao $parkingSlipsDao
      */
-    public function __construct()
+    public function __construct(ParkingSlipsDao $parkingSlipsDao)
     {
-        $this->parkingSlipsDao = new ParkingSlipDaoImpl();
+        $this->parkingSlipsDao = $parkingSlipsDao;
     }
 
     /**

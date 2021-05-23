@@ -2,8 +2,6 @@
 
 namespace Concrete\Package\ParkingApi\Src\Domain\ParkingSlots;
 
-use Concrete\Package\ParkingApi\Src\Dao\ParkingSlots\ParkingSlotsDaoImpl;
-
 /**
  * Class ParkingSlotsService
  * @package Concrete\Package\ParkingApi\Src\Domain\ParkingSlots
@@ -14,10 +12,11 @@ class ParkingSlotsService
 
     /**
      * ParkingSlotsService constructor.
+     * @param ParkingSlotsDao $parkingSlotsDao
      */
-    public function __construct()
+    public function __construct(ParkingSlotsDao $parkingSlotsDao)
     {
-        $this->parkingSlotsDao = new ParkingSlotsDaoImpl();
+        $this->parkingSlotsDao = $parkingSlotsDao;
     }
 
     /**
@@ -74,4 +73,5 @@ class ParkingSlotsService
     {
         $this->parkingSlotsDao->updateAvailability($parkingSlot->getId(), !$parkingSlot->getIsAvailable());
     }
+
 }

@@ -67,11 +67,6 @@ Route::register(
 );
 
 Route::register(
-    '/api/parking/slots',
-    'Concrete\Package\ParkingApi\Controller\Route\Parking::getParkingSlots'
-);
-
-Route::register(
     '/api/parking/enter',
     'Concrete\Package\ParkingApi\Controller\Route\Parking::enterParking'
 );

@@ -2,7 +2,6 @@
 
 namespace Concrete\Package\ParkingApi\Src\Domain\ParkingMap;
 
-use Concrete\Package\ParkingApi\Src\Dao\ParkingMap\ParkingMapDaoImpl;
 use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingMapInvalidEntryPointException;
 
 /**
@@ -15,10 +14,11 @@ class ParkingMapService
 
     /**
      * ParkingMapService constructor.
+     * @param ParkingMapDao $parkingMapDao
      */
-    public function __construct()
+    public function __construct(ParkingMapDao $parkingMapDao)
     {
-        $this->parkingMapDao = new ParkingMapDaoImpl();
+        $this->parkingMapDao = $parkingMapDao;
     }
 
     /**
@@ -32,10 +32,18 @@ class ParkingMapService
     }
 
     /**
+     * @param int $quantity
+     */
+    public function saveEntryOrExitQuantity($quantity)
+    {
+        $this->parkingMapDao->saveEntryOrExitQuantity($quantity);
+    }
+
+    /**
      * @param $entryPoint
      * @throws ParkingMapInvalidEntryPointException
      */
-    public function checkIfValidEntryPoint($entryPoint)
+    public function validateEntryPoint($entryPoint)
     {
         $entryPoints = $this->getEntryOrExitQuantity();
 
@@ -45,10 +53,11 @@ class ParkingMapService
     }
 
     /**
-     * @param int $quantity
+     * @param $entryOrExitQuantity
+     * @return bool
      */
-    public function saveEntryOrExitQuantity($quantity)
+    public function isValidEntryOrExitQuantityInput($entryOrExitQuantity)
     {
-        $this->parkingMapDao->saveEntryOrExitQuantity($quantity);
+        return ($entryOrExitQuantity && is_int($entryOrExitQuantity) && $entryOrExitQuantity >= 3);
     }
 }

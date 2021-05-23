@@ -3,7 +3,10 @@
 namespace Concrete\Package\ParkingApi\Src\Exceptions\Parking;
 
 /**
- * Class ParkingSlotAlreadyEmpty
+ * Class ParkingSlipsStillActiveException
  * @package Concrete\Package\ParkingApi\Src\Exceptions\Parking
  */
-class ParkingSlotAlreadyEmpty extends \Exception {}
+class ParkingSlipsStillActiveException extends \Exception
+{
+    protected $code = 231;
+}

@@ -154,6 +154,23 @@ class ParkingSlot
     }
 
     /**
+     * @return bool
+     */
+    public function hasValidType()
+    {
+        return isset($this->slotTypeToVehicleMapping[$this->type]);
+    }
+
+    /**
+     * @param string $vehicleType
+     * @return bool
+     */
+    public function isVehicleTypeAllowed($vehicleType)
+    {
+        return in_array($vehicleType, $this->slotTypeToVehicleMapping[$this->type]);
+    }
+
+    /**
      * @param bool $entryPoint
      * @return array
      */
@@ -177,15 +194,6 @@ class ParkingSlot
         }
 
         return $arr;
-    }
-
-    /**
-     * @param string $vehicleType
-     * @return bool
-     */
-    public function isVehicleTypeAllowed($vehicleType)
-    {
-        return in_array($vehicleType, $this->slotTypeToVehicleMapping[$this->type]);
     }
 
 }

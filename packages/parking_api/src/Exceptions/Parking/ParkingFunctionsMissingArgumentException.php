@@ -3,10 +3,10 @@
 namespace Concrete\Package\ParkingApi\Src\Exceptions\Parking;
 
 /**
- * Class ParkingSlotTypeInvalidException
+ * Class ParkingFunctionsMissingArgumentException
  * @package Concrete\Package\ParkingApi\Src\Exceptions\Parking
  */
-class ParkingSlotTypeInvalidException extends \Exception
+class ParkingFunctionsMissingArgumentException extends \Exception
 {
-    protected $code = 500;
+    protected $code = 221;
 }

@@ -3,10 +3,13 @@
 namespace Concrete\Package\ParkingApi\Controller\Route;
 
 use Concrete\Core\Controller\Controller;
-use Concrete\Package\ParkingApi\Src\Domain\Parking\ParkingService;
+use Concrete\Package\ParkingApi\Src\Dao\ParkingMap\ParkingMapDaoImpl;
+use Concrete\Package\ParkingApi\Src\Dao\ParkingSlips\ParkingSlipDaoImpl;
+use Concrete\Package\ParkingApi\Src\Dao\ParkingSlots\ParkingSlotsDaoImpl;
+use Concrete\Package\ParkingApi\Src\Dao\Vehicles\VehiclesDaoImpl;
+use Concrete\Package\ParkingApi\Src\Domain\ParkingFunctions\ParkingFunctionsService;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMapService;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlotsService;
-use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingMissingArgumentException;
 
 /**
  * Class Parking
@@ -19,47 +22,33 @@ class Parking extends Controller
      * API controller for /api/parking
      * Response (json):
      *  entry/exit quantity
+     *  parking slots
      */
     public function getParkingInfo()
     {
-        $parkingMapService = new ParkingMapService();
-        $parkingMapService->getEntryOrExitQuantity();
-
-        $data = [
-            'entryOrExitQuantity' => $parkingMapService->getEntryOrExitQuantity(),
-            'status' => 200
-        ];
-
-        echo json_encode($data);
-        exit();
-    }
-
-    /**
-     * API controller for /api/parking/slots
-     * Response (json):
-     *  parking slots
-     */
-    public function getParkingSlots()
-    {
         try {
-            $parkingSlotsService = new ParkingSlotsService();
+            $parkingSlotsDao = new ParkingSlotsDaoImpl();
+            $parkingSlotsService = new ParkingSlotsService($parkingSlotsDao);
+
+            $parkingMapDao = new ParkingMapDaoImpl();
+            $parkingMapService = new ParkingMapService($parkingMapDao);
 
             if ($this->request('entryPoint')) {
-                $parkingMapService = new ParkingMapService();
-                $parkingMapService->checkIfValidEntryPoint($this->request('entryPoint'));
+                $parkingMapService->validateEntryPoint($this->request('entryPoint'));
                 $parkingSlots = $parkingSlotsService->getParkingSlotsWithDetails()->sortByEntryPoint($this->request('entryPoint'))->toArray($this->request('entryPoint'));
             } else {
                 $parkingSlots = $parkingSlotsService->getParkingSlotsWithDetails()->toArray();
             }
 
             $data = [
+                'entryOrExitQuantity' => $parkingMapService->getEntryOrExitQuantity(),
                 'parkingSlots' => $parkingSlots,
                 'status' => 200
             ];
         } catch (\Exception $e) {
             $data = [
                 'errorMessage' => $e->getMessage(),
-                'status' => 300
+                'errorCode' => $e->getCode()
             ];
         }
 
@@ -81,18 +70,24 @@ class Parking extends Controller
     public function enterParking()
     {
         try {
-            if (!$this->request('entryPoint') || !$this->request('plateNumber') || !$this->request('type')) {
-                throw new ParkingMissingArgumentException('Please enter all required parameters');
-            }
+            $parkingMapDao = new ParkingMapDaoImpl();
+            $parkingSlotsDao = new ParkingSlotsDaoImpl();
+            $vehiclesDao = new VehiclesDaoImpl();
+            $parkingSlipsDao = new ParkingSlipDaoImpl();
 
-            $parkingService = new ParkingService();
+            $parkingFunctionsService = new ParkingFunctionsService($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
 
-            $parkingSlot = $parkingService->park(
+            $parkingFunctionsService->validateParkRequest(
                 $this->request('entryPoint'),
                 $this->request('plateNumber'),
                 $this->request('type'),
-                $this->request('color')
-            );
+                $this->request('color'));
+
+            $parkingSlot = $parkingFunctionsService->park(
+                $this->request('entryPoint'),
+                $this->request('plateNumber'),
+                $this->request('type'),
+                $this->request('color'));
 
             $data = [
                 'parkingSlotId' => $parkingSlot->getId(),
@@ -101,7 +96,7 @@ class Parking extends Controller
         } catch (\Exception $e) {
             $data = [
                 'errorMessage' => $e->getMessage(),
-                'status' => 300
+                'errorCode' => $e->getCode()
             ];
         }
 
@@ -119,11 +114,15 @@ class Parking extends Controller
     public function exitParking()
     {
         try {
-            if (!$this->get('parkingSlotId')) {
-                throw new ParkingMissingArgumentException('Please enter the parkingSlotId');
-            }
-            $parkingService = new ParkingService();
-            $parkingSlip = $parkingService->unPark($this->get('parkingSlotId'));
+            $parkingMapDao = new ParkingMapDaoImpl();
+            $parkingSlotsDao = new ParkingSlotsDaoImpl();
+            $vehiclesDao = new VehiclesDaoImpl();
+            $parkingSlipsDao = new ParkingSlipDaoImpl();
+
+            $parkingFunctionsService = new ParkingFunctionsService($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
+            $parkingFunctionsService->validateUnParkRequest($this->request('parkingSlotId'));
+
+            $parkingSlip = $parkingFunctionsService->unPark($this->request('parkingSlotId'));
 
             $data = [
                 'parkingSlip' => $parkingSlip->toArray(),
@@ -132,7 +131,7 @@ class Parking extends Controller
         } catch (\Exception $e) {
             $data = [
                 'errorMessage' => $e->getMessage(),
-                'status' => 300
+                'errorCode' => $e->getCode()
             ];
         }
 
