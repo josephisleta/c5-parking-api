@@ -11,19 +11,17 @@ use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlotTypeInvalidExc
 class ParkingFeeService
 {
     /**
-     * @param $entryTime
-     * @param $exitTime
      * @param $parkingSlotType
      * @return ParkingFee
      * @throws ParkingSlotTypeInvalidException
      */
-    public static function build($entryTime, $exitTime, $parkingSlotType)
+    public static function build($parkingSlotType)
     {
         if (!class_exists('Concrete\Package\ParkingApi\Src\Domain\ParkingFee\Types\\' . $parkingSlotType)) {
             throw new ParkingSlotTypeInvalidException('The parking slot type ' . $parkingSlotType . ' is invalid.');
         }
 
         $parkingFeeClass = 'Concrete\Package\ParkingApi\Src\Domain\ParkingFee\Types\\' . $parkingSlotType;
-        return new $parkingFeeClass($entryTime, $exitTime);
+        return new $parkingFeeClass();
     }
 }

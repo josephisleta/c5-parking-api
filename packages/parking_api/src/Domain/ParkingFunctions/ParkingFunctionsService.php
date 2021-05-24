@@ -63,13 +63,10 @@ class ParkingFunctionsService
     {
         $vehicle = $this->vehiclesService->add($plateNumber, $type, $color);
 
-        $parkingSlips = $this->parkingSlipsService->getByPlateNumber($vehicle->getPlateNumber());
+        $latestParkingSlip = $this->parkingSlipsService->getLatestByPlateNumber($vehicle->getPlateNumber());
 
-        if ($parkingSlips->count()) {
-            $latestParkingSlip = $parkingSlips->getLatest();
-            if ($latestParkingSlip && $latestParkingSlip->isOngoing()) {
-                throw new ParkingSlipsStillActiveException('Vehicle has not exited the parking yet.');
-            }
+        if ($latestParkingSlip && $latestParkingSlip->isOngoing()) {
+            throw new ParkingSlipsStillActiveException('Vehicle has not exited the parking yet.');
         }
 
         $nearestParkingSlot = $this->parkingSlotsService->getAllAvailable()->getNearestForVehicleType($entryPoint, $vehicle->getType());
@@ -80,7 +77,7 @@ class ParkingFunctionsService
 
         $this->parkingSlotsService->toggleAvailability($nearestParkingSlot);
 
-        $this->parkingSlipsService->add($nearestParkingSlot->getId(), $vehicle->getPlateNumber());
+        $this->parkingSlipsService->process($nearestParkingSlot->getId(), $vehicle->getPlateNumber(), $latestParkingSlip);
 
         return $nearestParkingSlot;
     }
@@ -93,17 +90,17 @@ class ParkingFunctionsService
      */
     public function unPark($parkingSlotId)
     {
-        $parkingSlot = $this->parkingSlotsService->getById($parkingSlotId);
-
-        $this->parkingSlotsService->toggleAvailability($parkingSlot);
-
         $parkingSlip = $this->parkingSlipsService->getByParkingSlotId($parkingSlotId)->getLatest();
 
         if (!$parkingSlip) {
             throw new ParkingSlipsDoesNotExistException('Parking slip for parking slot id ' . $parkingSlotId . ' does not exist.');
         }
 
-        return $this->parkingSlipsService->updateParkingSlip($parkingSlip, $parkingSlot->getType());
+        $parkingSlot = $this->parkingSlotsService->getById($parkingSlotId);
+
+        $this->parkingSlotsService->toggleAvailability($parkingSlot);
+
+        return $this->parkingSlipsService->exitParkingSlip($parkingSlip, $parkingSlot->getType());
     }
 
     /**

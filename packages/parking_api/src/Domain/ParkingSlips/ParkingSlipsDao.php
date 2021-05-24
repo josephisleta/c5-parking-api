@@ -21,6 +21,12 @@ interface ParkingSlipsDao
     public function getByPlateNumber($plateNumber);
 
     /**
+     * @param $plateNumber
+     * @return mixed
+     */
+    public function getLatestByPlateNumber($plateNumber);
+
+    /**
      * @param $parkingSlotId
      * @return mixed
      */

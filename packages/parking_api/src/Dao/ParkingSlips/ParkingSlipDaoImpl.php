@@ -48,6 +48,18 @@ class ParkingSlipDaoImpl implements ParkingSlipsDao
     }
 
     /**
+     * @param $plateNumber
+     * @return mixed
+     */
+    public function getLatestByPlateNumber($plateNumber)
+    {
+        $queryStatement = "SELECT * FROM {$this->tableName} WHERE plateNumber = ? ORDER BY entryTime DESC LIMIT 1";
+        $queryParams = [$plateNumber];
+
+        return $this->db->executeQuery($queryStatement, $queryParams)->fetch();
+    }
+
+    /**
      * @param $parkingSlotId
      * @return mixed
      */
@@ -78,8 +90,9 @@ class ParkingSlipDaoImpl implements ParkingSlipsDao
      */
     public function update($parkingSlip)
     {
-        $queryStatement = "UPDATE {$this->tableName} SET exitTime = ?, fee = ? WHERE id = ?";
+        $queryStatement = "UPDATE {$this->tableName} SET parkingSlotId = ?, exitTime = ?, fee = ? WHERE id = ?";
         $queryParams = [
+            $parkingSlip->getParkingSlotId(),
             $parkingSlip->getExitTime(),
             $parkingSlip->getFee(),
             $parkingSlip->getId()
