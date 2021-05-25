@@ -33,7 +33,7 @@ class SPTest extends TestCase
         $exitTime = '2021-05-24 01:00:00';
         $this->assertEquals(40, $this->parkingFee->get($entryTime, $exitTime));
 
-        // 2 hr
+        // 2 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-24 02:00:00';
         $this->assertEquals(40, $this->parkingFee->get($entryTime, $exitTime));

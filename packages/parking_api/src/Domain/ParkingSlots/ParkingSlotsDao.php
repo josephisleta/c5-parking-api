@@ -25,6 +25,11 @@ interface ParkingSlotsDao
     public function getAllAvailable();
 
     /**
+     * @return mixed
+     */
+    public function getParkingSlotsDetail();
+
+    /**
      * @param ParkingSlot $parkingSlot
      * @return mixed
      */
@@ -40,9 +45,4 @@ interface ParkingSlotsDao
      * @return mixed
      */
     public function updateAvailability($parkingSlot);
-
-    /**
-     * @return mixed
-     */
-    public function getParkingSlotsDetail();
 }

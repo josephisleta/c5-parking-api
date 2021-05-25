@@ -14,9 +14,18 @@ class ParkingSlotsService
      * ParkingSlotsService constructor.
      * @param ParkingSlotsDao $parkingSlotsDao
      */
-    public function __construct(ParkingSlotsDao $parkingSlotsDao)
+    public function __construct($parkingSlotsDao)
     {
         $this->parkingSlotsDao = $parkingSlotsDao;
+    }
+
+    /**
+     * @param $id
+     * @return ParkingSlot
+     */
+    public function getById($id)
+    {
+        return new ParkingSlot($this->parkingSlotsDao->getById($id));
     }
 
     /**
@@ -30,26 +39,17 @@ class ParkingSlotsService
     /**
      * @return ParkingSlots
      */
-    public function getParkingSlotsWithDetails()
-    {
-        return new ParkingSlots($this->parkingSlotsDao->getParkingSlotsDetail());
-    }
-
-    /**
-     * @return ParkingSlots
-     */
     public function getAllAvailable()
     {
         return new ParkingSlots($this->parkingSlotsDao->getAllAvailable());
     }
 
     /**
-     * @param $id
-     * @return ParkingSlot
+     * @return ParkingSlots
      */
-    public function getById($id)
+    public function getParkingSlotsWithDetails()
     {
-        return new ParkingSlot($this->parkingSlotsDao->getById($id));
+        return new ParkingSlots($this->parkingSlotsDao->getParkingSlotsDetail());
     }
 
     /**

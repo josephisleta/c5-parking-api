@@ -4,7 +4,7 @@ namespace Concrete\Package\ParkingApi\Controller\Route;
 
 use Concrete\Core\Controller\Controller;
 use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap\ParkingMapDaoImpl;
-use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlips\ParkingSlipDaoImpl;
+use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlips\ParkingSlipsDaoImpl;
 use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlots\ParkingSlotsDaoImpl;
 use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\Vehicles\VehiclesDaoImpl;
 use Concrete\Package\ParkingApi\Src\Application\Parking\Actions\GetInfoAction;
@@ -64,7 +64,7 @@ class Parking extends Controller
         $parkingMapDao = new ParkingMapDaoImpl();
         $parkingSlotsDao = new ParkingSlotsDaoImpl();
         $vehiclesDao = new VehiclesDaoImpl();
-        $parkingSlipsDao = new ParkingSlipDaoImpl();
+        $parkingSlipsDao = new ParkingSlipsDaoImpl();
 
         $park = new ParkAction($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
 
@@ -88,7 +88,7 @@ class Parking extends Controller
         $parkingMapDao = new ParkingMapDaoImpl();
         $parkingSlotsDao = new ParkingSlotsDaoImpl();
         $vehiclesDao = new VehiclesDaoImpl();
-        $parkingSlipsDao = new ParkingSlipDaoImpl();
+        $parkingSlipsDao = new ParkingSlipsDaoImpl();
 
         $unPark = new UnParkAction($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
 

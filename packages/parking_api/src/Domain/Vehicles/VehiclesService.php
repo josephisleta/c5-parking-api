@@ -14,7 +14,7 @@ class VehiclesService
      * VehiclesService constructor.
      * @param VehiclesDao $vehiclesDao
      */
-    public function __construct(VehiclesDao $vehiclesDao)
+    public function __construct($vehiclesDao)
     {
         $this->vehiclesDao = $vehiclesDao;
     }
@@ -60,13 +60,13 @@ class VehiclesService
     }
 
     /**
-     * @param string $color
+     * @param $color
      * @return bool
      */
     public function isValidColor($color)
     {
         if ($color) {
-            return preg_match('/^[a-zA-Z ]*$/', $color);
+            return (bool) preg_match('/^[a-zA-Z ]*$/', $color);
         }
 
         return true;

@@ -9,18 +9,6 @@ namespace Concrete\Package\ParkingApi\Src\Domain\ParkingSlips;
 interface ParkingSlipsDao
 {
     /**
-     * @param $id
-     * @return mixed
-     */
-    public function getById($id);
-
-    /**
-     * @param $plateNumber
-     * @return mixed
-     */
-    public function getByPlateNumber($plateNumber);
-
-    /**
      * @param $plateNumber
      * @return mixed
      */

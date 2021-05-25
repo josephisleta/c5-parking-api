@@ -10,7 +10,7 @@ use Database;
  * Class ParkingSlipDaoImpl
  * @package Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlips
  */
-class ParkingSlipDaoImpl implements ParkingSlipsDao
+class ParkingSlipsDaoImpl implements ParkingSlipsDao
 {
     private $db;
     private $tableName = 'parkingSlip';
@@ -21,30 +21,6 @@ class ParkingSlipDaoImpl implements ParkingSlipsDao
     public function __construct()
     {
         $this->db = Database::connection();
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public function getById($id)
-    {
-        $queryStatement = "SELECT * FROM {$this->tableName} WHERE id = ?";
-        $queryParams = [$id];
-
-        return $this->db->executeQuery($queryStatement, $queryParams)->fetch();
-    }
-
-    /**
-     * @param $plateNumber
-     * @return mixed
-     */
-    public function getByPlateNumber($plateNumber)
-    {
-        $queryStatement = "SELECT * FROM {$this->tableName} WHERE plateNumber = ?";
-        $queryParams = [$plateNumber];
-
-        return $this->db->executeQuery($queryStatement, $queryParams)->fetchAll();
     }
 
     /**

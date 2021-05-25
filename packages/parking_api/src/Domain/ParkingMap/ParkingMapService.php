@@ -2,8 +2,6 @@
 
 namespace Concrete\Package\ParkingApi\Src\Domain\ParkingMap;
 
-use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingMapInvalidEntryPointException;
-
 /**
  * Class ParkingMapService
  * @package Concrete\Package\ParkingApi\Src\Domain\ParkingMap
@@ -16,7 +14,7 @@ class ParkingMapService
      * ParkingMapService constructor.
      * @param ParkingMapDao $parkingMapDao
      */
-    public function __construct(ParkingMapDao $parkingMapDao)
+    public function __construct($parkingMapDao)
     {
         $this->parkingMapDao = $parkingMapDao;
     }
