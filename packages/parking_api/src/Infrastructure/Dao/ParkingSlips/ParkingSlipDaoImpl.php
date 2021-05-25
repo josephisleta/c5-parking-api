@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\ParkingApi\Src\Dao\ParkingSlips;
+namespace Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlips;
 
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlips\ParkingSlip;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlips\ParkingSlipsDao;
@@ -8,7 +8,7 @@ use Database;
 
 /**
  * Class ParkingSlipDaoImpl
- * @package Concrete\Package\ParkingApi\Src\Dao\ParkingSlips
+ * @package Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlips
  */
 class ParkingSlipDaoImpl implements ParkingSlipsDao
 {

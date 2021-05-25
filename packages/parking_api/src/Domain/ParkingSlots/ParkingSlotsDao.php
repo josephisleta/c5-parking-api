@@ -36,11 +36,10 @@ interface ParkingSlotsDao
     public function deleteAll();
 
     /**
-     * @param $id
-     * @param bool $isAvailable
+     * @param $parkingSlot
      * @return mixed
      */
-    public function updateAvailability($id, $isAvailable);
+    public function updateAvailability($parkingSlot);
 
     /**
      * @return mixed

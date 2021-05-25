@@ -3,13 +3,16 @@
 namespace Concrete\Package\ParkingApi\Controller\Route;
 
 use Concrete\Core\Controller\Controller;
-use Concrete\Package\ParkingApi\Src\Dao\ParkingMap\ParkingMapDaoImpl;
-use Concrete\Package\ParkingApi\Src\Dao\ParkingSlips\ParkingSlipDaoImpl;
-use Concrete\Package\ParkingApi\Src\Dao\ParkingSlots\ParkingSlotsDaoImpl;
-use Concrete\Package\ParkingApi\Src\Dao\Vehicles\VehiclesDaoImpl;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingFunctions\ParkingFunctionsService;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMapService;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlotsService;
+use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap\ParkingMapDaoImpl;
+use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlips\ParkingSlipDaoImpl;
+use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlots\ParkingSlotsDaoImpl;
+use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\Vehicles\VehiclesDaoImpl;
+use Concrete\Package\ParkingApi\Src\Application\Parking\Actions\GetInfoAction;
+use Concrete\Package\ParkingApi\Src\Application\Parking\Requests\GetInfoRequest;
+use Concrete\Package\ParkingApi\Src\Application\Parking\Actions\ParkAction;
+use Concrete\Package\ParkingApi\Src\Application\Parking\Requests\ParkRequest;
+use Concrete\Package\ParkingApi\Src\Application\Parking\Actions\UnParkAction;
+use Concrete\Package\ParkingApi\Src\Application\Parking\Requests\UnParkRequest;
 
 /**
  * Class Parking
@@ -26,33 +29,16 @@ class Parking extends Controller
      */
     public function getParkingInfo()
     {
-        try {
-            $parkingSlotsDao = new ParkingSlotsDaoImpl();
-            $parkingSlotsService = new ParkingSlotsService($parkingSlotsDao);
+        $request = new GetInfoRequest($this->request('entryPoint'));
 
-            $parkingMapDao = new ParkingMapDaoImpl();
-            $parkingMapService = new ParkingMapService($parkingMapDao);
+        $parkingMapDao = new ParkingMapDaoImpl();
+        $parkingSlotsDao = new ParkingSlotsDaoImpl();
 
-            if ($this->request('entryPoint')) {
-                $parkingMapService->validateEntryPoint($this->request('entryPoint'));
-                $parkingSlots = $parkingSlotsService->getParkingSlotsWithDetails()->sortByEntryPoint($this->request('entryPoint'))->toArray($this->request('entryPoint'));
-            } else {
-                $parkingSlots = $parkingSlotsService->getParkingSlotsWithDetails()->toArray();
-            }
+        $getInfo = new GetInfoAction($parkingMapDao, $parkingSlotsDao);
 
-            $data = [
-                'entryOrExitQuantity' => $parkingMapService->getEntryOrExitQuantity(),
-                'parkingSlots' => $parkingSlots,
-                'status' => 200
-            ];
-        } catch (\Exception $e) {
-            $data = [
-                'errorMessage' => $e->getMessage(),
-                'errorCode' => $e->getCode()
-            ];
-        }
+        $response = $getInfo->process($request);
 
-        echo json_encode($data);
+        echo json_encode($response->get());
         exit();
     }
 
@@ -69,38 +55,22 @@ class Parking extends Controller
      */
     public function enterParking()
     {
-        try {
-            $parkingMapDao = new ParkingMapDaoImpl();
-            $parkingSlotsDao = new ParkingSlotsDaoImpl();
-            $vehiclesDao = new VehiclesDaoImpl();
-            $parkingSlipsDao = new ParkingSlipDaoImpl();
+        $request = new ParkRequest(
+            $this->request('entryPoint'),
+            $this->request('plateNumber'),
+            $this->request('type'),
+            $this->request('color'));
 
-            $parkingFunctionsService = new ParkingFunctionsService($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
+        $parkingMapDao = new ParkingMapDaoImpl();
+        $parkingSlotsDao = new ParkingSlotsDaoImpl();
+        $vehiclesDao = new VehiclesDaoImpl();
+        $parkingSlipsDao = new ParkingSlipDaoImpl();
 
-            $parkingFunctionsService->validateParkRequest(
-                $this->request('entryPoint'),
-                $this->request('plateNumber'),
-                $this->request('type'),
-                $this->request('color'));
+        $park = new ParkAction($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
 
-            $parkingSlot = $parkingFunctionsService->park(
-                $this->request('entryPoint'),
-                $this->request('plateNumber'),
-                $this->request('type'),
-                $this->request('color'));
+        $response = $park->process($request);
 
-            $data = [
-                'parkingSlotId' => $parkingSlot->getId(),
-                'status' => 200
-            ];
-        } catch (\Exception $e) {
-            $data = [
-                'errorMessage' => $e->getMessage(),
-                'errorCode' => $e->getCode()
-            ];
-        }
-
-        echo json_encode($data);
+        echo json_encode($response->get());
         exit();
     }
 
@@ -113,29 +83,18 @@ class Parking extends Controller
      */
     public function exitParking()
     {
-        try {
-            $parkingMapDao = new ParkingMapDaoImpl();
-            $parkingSlotsDao = new ParkingSlotsDaoImpl();
-            $vehiclesDao = new VehiclesDaoImpl();
-            $parkingSlipsDao = new ParkingSlipDaoImpl();
+        $request = new UnParkRequest($this->request('parkingSlotId'));
 
-            $parkingFunctionsService = new ParkingFunctionsService($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
-            $parkingFunctionsService->validateUnParkRequest($this->request('parkingSlotId'));
+        $parkingMapDao = new ParkingMapDaoImpl();
+        $parkingSlotsDao = new ParkingSlotsDaoImpl();
+        $vehiclesDao = new VehiclesDaoImpl();
+        $parkingSlipsDao = new ParkingSlipDaoImpl();
 
-            $parkingSlip = $parkingFunctionsService->unPark($this->request('parkingSlotId'));
+        $unPark = new UnParkAction($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
 
-            $data = [
-                'parkingSlip' => $parkingSlip->toArray(),
-                'status' => 200
-            ];
-        } catch (\Exception $e) {
-            $data = [
-                'errorMessage' => $e->getMessage(),
-                'errorCode' => $e->getCode()
-            ];
-        }
+        $response = $unPark->process($request);
 
-        echo json_encode($data);
+        echo json_encode($response->get());
         exit();
     }
 }

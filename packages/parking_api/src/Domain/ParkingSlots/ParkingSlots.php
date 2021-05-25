@@ -33,6 +33,14 @@ class ParkingSlots
     }
 
     /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->data);
+    }
+
+    /**
      * @param $entryPoint
      * @return $this
      */

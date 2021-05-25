@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\ParkingApi\Src\Dao\ParkingSlots;
+namespace Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlots;
 
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlot;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlotsDao;
@@ -8,7 +8,7 @@ use Database;
 
 /**
  * Class ParkingSlotsDaoImpl
- * @package Concrete\Package\ParkingApi\Src\Dao\ParkingSlots
+ * @package Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlots
  */
 class ParkingSlotsDaoImpl implements ParkingSlotsDao
 {
@@ -83,13 +83,13 @@ class ParkingSlotsDaoImpl implements ParkingSlotsDao
     }
 
     /**
-     * @param $id
-     * @param bool $isAvailable
+     * @param ParkingSlot $parkingSlot
+     * @return mixed|void
      */
-    public function updateAvailability($id, $isAvailable)
+    public function updateAvailability($parkingSlot)
     {
         $queryStatement = "UPDATE {$this->tableName} SET isAvailable = ? WHERE id = ?";
-        $queryParams = [$isAvailable, $id];
+        $queryParams = [$parkingSlot->getIsAvailable(), $parkingSlot->getId()];
 
         $this->db->execute($queryStatement, $queryParams);
     }

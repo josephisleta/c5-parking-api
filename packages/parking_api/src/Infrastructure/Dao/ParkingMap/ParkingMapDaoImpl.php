@@ -1,13 +1,13 @@
 <?php
 
-namespace Concrete\Package\ParkingApi\Src\Dao\ParkingMap;
+namespace Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap;
 
 use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMapDao;
 use Database;
 
 /**
  * Class ParkingMapDaoImpl
- * @package Concrete\Package\ParkingApi\Src\Dao\ParkingMap
+ * @package Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap
  */
 class ParkingMapDaoImpl implements ParkingMapDao
 {

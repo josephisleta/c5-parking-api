@@ -3,8 +3,8 @@
 namespace Concrete\Package\ParkingApi\Controller\SinglePage\Dashboard\Parking;
 
 use Concrete\Core\Page\Controller\DashboardPageController;
-use Concrete\Package\ParkingApi\Src\Dao\ParkingMap\ParkingMapDaoImpl;
-use Concrete\Package\ParkingApi\Src\Dao\ParkingSlots\ParkingSlotsDaoImpl;
+use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap\ParkingMapDaoImpl;
+use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlots\ParkingSlotsDaoImpl;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMap;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMapService;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlot;

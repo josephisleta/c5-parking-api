@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\ParkingApi\Src\Dao\Vehicles;
+namespace Concrete\Package\ParkingApi\Src\Infrastructure\Dao\Vehicles;
 
 use Concrete\Package\ParkingApi\Src\Domain\Vehicles\Vehicle;
 use Concrete\Package\ParkingApi\Src\Domain\Vehicles\VehiclesDao;
@@ -8,7 +8,7 @@ use Database;
 
 /**
  * Class VehiclesDaoImpl
- * @package Concrete\Package\ParkingApi\Src\Dao\Vehicles
+ * @package Concrete\Package\ParkingApi\Src\Infrastructure\Dao\Vehicles
  */
 class VehiclesDaoImpl implements VehiclesDao
 {

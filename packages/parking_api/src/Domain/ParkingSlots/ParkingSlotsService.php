@@ -69,9 +69,19 @@ class ParkingSlotsService
     /**
      * @param ParkingSlot $parkingSlot
      */
-    public function toggleAvailability($parkingSlot)
+    public function updateAsAvailable($parkingSlot)
     {
-        $this->parkingSlotsDao->updateAvailability($parkingSlot->getId(), !$parkingSlot->getIsAvailable());
+        $parkingSlot->setIsAvailable(true);
+        $this->parkingSlotsDao->updateAvailability($parkingSlot);
+    }
+
+    /**
+     * @param ParkingSlot $parkingSlot
+     */
+    public function updateAsUnavailable($parkingSlot)
+    {
+        $parkingSlot->setIsAvailable(false);
+        $this->parkingSlotsDao->updateAvailability($parkingSlot);
     }
 
 }

@@ -40,4 +40,35 @@ class VehiclesService
 
         return $vehicle;
     }
+
+    /**
+     * @param string $plateNumber
+     * @return bool
+     */
+    public function isValidPlateNumber($plateNumber)
+    {
+        return $plateNumber && ctype_alnum($plateNumber);
+    }
+
+    /**
+     * @param string $type
+     * @return bool
+     */
+    public function isValidType($type)
+    {
+        return $type && in_array($type, ['S', 'M', 'L']);
+    }
+
+    /**
+     * @param string $color
+     * @return bool
+     */
+    public function isValidColor($color)
+    {
+        if ($color) {
+            return preg_match('/^[a-zA-Z ]*$/', $color);
+        }
+
+        return true;
+    }
 }

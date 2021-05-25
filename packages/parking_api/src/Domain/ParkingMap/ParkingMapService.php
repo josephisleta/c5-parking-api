@@ -41,15 +41,11 @@ class ParkingMapService
 
     /**
      * @param $entryPoint
-     * @throws ParkingMapInvalidEntryPointException
+     * @return bool
      */
-    public function validateEntryPoint($entryPoint)
+    public function isValidEntryPoint($entryPoint)
     {
-        $entryPoints = $this->getEntryOrExitQuantity();
-
-        if ($entryPoint < 0 || $entryPoint > $entryPoints) {
-            throw new ParkingMapInvalidEntryPointException('Invalid entry point passed');
-        }
+        return ($entryPoint > 0 && $entryPoint <= $this->getEntryOrExitQuantity());
     }
 
     /**
