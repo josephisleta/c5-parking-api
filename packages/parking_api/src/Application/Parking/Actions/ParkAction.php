@@ -32,6 +32,9 @@ class ParkAction implements Action
     private $vehiclesService;
     private $parkingSlipsService;
 
+    /** @var ParkResponse $response */
+    private $response;
+
     /**
      * Park constructor.
      * @param ParkingMapDao $parkingMapDao
@@ -45,6 +48,8 @@ class ParkAction implements Action
         $this->parkingSlotsService = new ParkingSlotsService($parkingSlotsDao);
         $this->vehiclesService = new VehiclesService($vehiclesDao);
         $this->parkingSlipsService = new ParkingSlipsService($parkingSlipsDao);
+
+        $this->response = new ParkResponse();
     }
 
     /**
@@ -73,21 +78,21 @@ class ParkAction implements Action
             $nearestParkingSlot = $availableParkingSlots->getNearestForVehicleType($request->getEntryPoint(), $vehicle->getType());
 
             if (!$nearestParkingSlot) {
-                throw new ParkingSlotsException('No available parking slot for vehicle type.');
+                throw new ParkingSlotsException('No available parking slot for vehicle type ' . $vehicle->getType() . ' as this time.');
             }
 
             $this->parkingSlipsService->process($nearestParkingSlot->getId(), $vehicle->getPlateNumber(), $latestParkingSlip);
 
             $this->parkingSlotsService->updateAsUnavailable($nearestParkingSlot);
 
-            $response = new ParkResponse($nearestParkingSlot);
+            $this->response->setParkingSlot($nearestParkingSlot);
+
         } catch (\Exception $e) {
-            $response = new ParkResponse();
-            $response->setErrorCode($e->getCode());
-            $response->setErrorMessage($e->getMessage());
+            $this->response->setErrorCode($e->getCode());
+            $this->response->setErrorMessage($e->getMessage());
         }
 
-        return $response;
+        return $this->response;
     }
 
     /**

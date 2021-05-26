@@ -21,15 +21,28 @@ use Concrete\Package\ParkingApi\Src\Application\Parking\Requests\UnParkRequest;
  */
 class Parking extends Controller
 {
+    /** @var array $input */
+    private $input;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $input = file_get_contents('php://input');
+        $this->input = json_decode($input, true);
+    }
+
     /**
      * API controller for /api/parking
+     * Optional param:
+     *  entryPoint
      * Response (json):
      *  entry/exit quantity
      *  parking slots
      */
     public function getParkingInfo()
     {
-        $request = new GetInfoRequest($this->request('entryPoint'));
+        $request = new GetInfoRequest($_GET);
 
         $parkingMapDao = new ParkingMapDaoImpl();
         $parkingSlotsDao = new ParkingSlotsDaoImpl();
@@ -38,12 +51,14 @@ class Parking extends Controller
 
         $response = $getInfo->process($request);
 
-        echo json_encode($response->get());
+        echo $response->toJson();
         exit();
     }
 
     /**
      * API controller for /api/parking/enter
+     * Accepts
+     *  Content-Type: application/json
      * Required params:
      *  plateNumber
      *  type
@@ -55,11 +70,7 @@ class Parking extends Controller
      */
     public function enterParking()
     {
-        $request = new ParkRequest(
-            $this->request('entryPoint'),
-            $this->request('plateNumber'),
-            $this->request('type'),
-            $this->request('color'));
+        $request = new ParkRequest($this->input);
 
         $parkingMapDao = new ParkingMapDaoImpl();
         $parkingSlotsDao = new ParkingSlotsDaoImpl();
@@ -70,20 +81,22 @@ class Parking extends Controller
 
         $response = $park->process($request);
 
-        echo json_encode($response->get());
+        echo $response->toJson();
         exit();
     }
 
     /**
      * API controller for /api/parking/exit
+     * Accepts
+     *  Content-Type: application/json
      * Required params:
      *  parkingSlotId
      * Response (json):
-     *  parking fee
+     *  parking slip
      */
     public function exitParking()
     {
-        $request = new UnParkRequest($this->request('parkingSlotId'));
+        $request = new UnParkRequest($this->input);
 
         $parkingMapDao = new ParkingMapDaoImpl();
         $parkingSlotsDao = new ParkingSlotsDaoImpl();
@@ -94,7 +107,7 @@ class Parking extends Controller
 
         $response = $unPark->process($request);
 
-        echo json_encode($response->get());
+        echo $response->toJson();
         exit();
     }
 }

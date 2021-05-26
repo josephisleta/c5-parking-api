@@ -15,13 +15,10 @@ class UnParkResponse extends AbstractResponse
 
     /**
      * UnParkResponse constructor.
-     * @param ParkingSlip|null $parkingSlip
      */
-    public function __construct($parkingSlip = null)
+    public function __construct()
     {
-        if ($parkingSlip) {
-            $this->setParkingSlip($parkingSlip);
-        }
+
     }
 
     /**

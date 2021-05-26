@@ -20,6 +20,9 @@ class GetInfoAction implements Action
     private $parkingMapService;
     private $parkingSlotsService;
 
+    /** @var GetInfoResponse $response */
+    private $response;
+
     /**
      * GetInfo constructor.
      * @param ParkingMapDao $parkingMapDao
@@ -29,6 +32,8 @@ class GetInfoAction implements Action
     {
         $this->parkingMapService = new ParkingMapService($parkingMapDao);
         $this->parkingSlotsService = new ParkingSlotsService($parkingSlotsDao);
+
+        $this->response = new GetInfoResponse();
     }
 
     /**
@@ -40,20 +45,23 @@ class GetInfoAction implements Action
         try {
             $this->validate($request);
 
-            if ($request->getEntryPoint()) {
-                $parkingSlotsArray = $this->parkingSlotsService->getParkingSlotsWithDetails()->sortByEntryPoint($request->getEntryPoint())->toArray($request->getEntryPoint());
+            $entryPoint = $request->getEntryPoint();
+
+            if ($entryPoint) {
+                $parkingSlotsArray = $this->parkingSlotsService->getParkingSlotsWithDetails()->sortByEntryPoint($entryPoint)->toArray($entryPoint);
             } else {
                 $parkingSlotsArray = $this->parkingSlotsService->getParkingSlotsWithDetails()->toArray();
             }
 
-            $response = new GetInfoResponse($this->parkingMapService->getEntryOrExitQuantity(), $parkingSlotsArray);
+            $this->response->setExitOrExitQuantity($this->parkingMapService->getEntryOrExitQuantity());
+            $this->response->setParkingSlotsArray($parkingSlotsArray);
+
         } catch (\Exception $e) {
-            $response = new GetInfoResponse();
-            $response->setErrorCode($e->getCode());
-            $response->setErrorMessage($e->getMessage());
+            $this->response->setErrorCode($e->getCode());
+            $this->response->setErrorMessage($e->getMessage());
         }
 
-        return $response;
+        return $this->response;
     }
 
     /**

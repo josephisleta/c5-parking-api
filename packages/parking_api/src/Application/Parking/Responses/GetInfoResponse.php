@@ -8,24 +8,19 @@ namespace Concrete\Package\ParkingApi\Src\Application\Parking\Responses;
  */
 class GetInfoResponse extends AbstractResponse
 {
+    protected $errorMessage;
+    protected $errorCode;
+
     protected $exitOrExitQuantity;
     /** @var array $parkingSlots */
     protected $parkingSlotsArray;
 
     /**
      * GetInfoResponse constructor.
-     * @param $entryOrExitQuantity
-     * @param array $parkingSlotsArray
      */
-    public function __construct($entryOrExitQuantity = '', $parkingSlotsArray = [])
+    public function __construct()
     {
-        if ($entryOrExitQuantity) {
-            $this->setExitOrExitQuantity($entryOrExitQuantity);
-        }
 
-        if ($parkingSlotsArray) {
-            $this->setParkingSlotsArray($parkingSlotsArray);
-        }
     }
 
     /**

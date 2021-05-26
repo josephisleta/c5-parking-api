@@ -98,7 +98,7 @@ class ParkingSlipsService
         $parkingFee = ParkingFeeService::build($parkingSlotType);
 
         $parkingSlip->setExitTime(date('Y-m-d H:i:s'));
-        $parkingSlip->setFee($parkingFee->get($parkingSlip->getEntryTime(), $parkingSlip->getExitTime()));
+        $parkingSlip->setFee($parkingFee->getTotal($parkingSlip->getEntryTime(), $parkingSlip->getExitTime()));
 
         $this->parkingSlipsDao->update($parkingSlip);
 

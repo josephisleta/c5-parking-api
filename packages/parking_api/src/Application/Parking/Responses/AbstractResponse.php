@@ -48,12 +48,20 @@ abstract class AbstractResponse implements ResponseInterface
     /**
      * @return array
      */
-    public function get()
+    public function getBody()
     {
         if ($this->getErrorCode()) {
             return $this->getErrorBody();
         }
 
         return $this->getSuccessBody();
+    }
+
+    /**
+     * @return false|string
+     */
+    public function toJson()
+    {
+        return json_encode($this->getBody());
     }
 }

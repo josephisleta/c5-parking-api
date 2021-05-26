@@ -11,12 +11,12 @@ class GetInfoRequest implements Request
     protected $entryPoint;
 
     /**
-     * GetInfo constructor.
-     * @param $entryPoint
+     * GetInfoRequest constructor.
+     * @param array $request
      */
-    public function __construct($entryPoint = '')
+    public function __construct($request)
     {
-        $this->setEntryPoint($entryPoint);
+        $this->setEntryPoint($request['entryPoint']);
     }
 
     /**

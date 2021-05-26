@@ -29,6 +29,9 @@ class UnParkAction implements Action
     private $vehiclesService;
     private $parkingSlipsService;
 
+    /** @var UnParkResponse $response */
+    private $response;
+
     /**
      * UnPark constructor.
      * @param ParkingMapDao $parkingMapDao
@@ -42,6 +45,8 @@ class UnParkAction implements Action
         $this->parkingSlotsService = new ParkingSlotsService($parkingSlotsDao);
         $this->vehiclesService = new VehiclesService($vehiclesDao);
         $this->parkingSlipsService = new ParkingSlipsService($parkingSlipsDao);
+
+        $this->response = new UnParkResponse();
     }
 
     /**
@@ -60,18 +65,19 @@ class UnParkAction implements Action
             }
 
             $parkingSlot = $this->parkingSlotsService->getById($request->getParkingSlotId());
+
             $parkingSlip = $this->parkingSlipsService->exitParkingSlip($latestParkingSlip, $parkingSlot->getType());
 
             $this->parkingSlotsService->updateAsAvailable($parkingSlot);
 
-            $response = new UnParkResponse($parkingSlip);
+            $this->response->setParkingSlip($parkingSlip);
+
         } catch (\Exception $e) {
-            $response = new UnParkResponse();
-            $response->setErrorCode($e->getCode());
-            $response->setErrorMessage($e->getMessage());
+            $this->response->setErrorCode($e->getCode());
+            $this->response->setErrorMessage($e->getMessage());
         }
 
-        return $response;
+        return $this->response;
     }
 
     /**

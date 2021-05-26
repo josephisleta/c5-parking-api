@@ -43,5 +43,10 @@ interface ResponseInterface
     /**
      * @return array
      */
-    public function get();
+    public function getBody();
+
+    /**
+     * @return false|string
+     */
+    public function toJson();
 }

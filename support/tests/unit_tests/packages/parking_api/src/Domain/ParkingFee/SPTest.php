@@ -26,22 +26,22 @@ class SPTest extends TestCase
     {
         $entryTime = date('Y-m-d H:i:s');
         $exitTime = date('Y-m-d H:i:s');
-        $this->assertEquals(40, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(40, $this->parkingFee->getTotal($entryTime, $exitTime));
 
         // 1 hr
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-24 01:00:00';
-        $this->assertEquals(40, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(40, $this->parkingFee->getTotal($entryTime, $exitTime));
 
         // 2 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-24 02:00:00';
-        $this->assertEquals(40, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(40, $this->parkingFee->getTotal($entryTime, $exitTime));
 
         // 3 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-24 03:00:00';
-        $this->assertEquals(40, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(40, $this->parkingFee->getTotal($entryTime, $exitTime));
     }
 
     public function testMoreThan3Hrs()
@@ -49,27 +49,27 @@ class SPTest extends TestCase
         // 4 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-24 04:00:00';
-        $this->assertEquals(60, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(60, $this->parkingFee->getTotal($entryTime, $exitTime));
 
         // 5 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-24 05:00:00';
-        $this->assertEquals(80, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(80, $this->parkingFee->getTotal($entryTime, $exitTime));
 
         // 6 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-24 06:00:00';
-        $this->assertEquals(100, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(100, $this->parkingFee->getTotal($entryTime, $exitTime));
 
         // 6.4 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-24 06:25:00';
-        $this->assertEquals(100, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(100, $this->parkingFee->getTotal($entryTime, $exitTime));
 
         // 6.5 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-24 06:30:00';
-        $this->assertEquals(120, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(120, $this->parkingFee->getTotal($entryTime, $exitTime));
     }
 
     public function test24Hrs()
@@ -77,7 +77,7 @@ class SPTest extends TestCase
         // 24 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-25 00:00:00';
-        $this->assertEquals(5000, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(5000, $this->parkingFee->getTotal($entryTime, $exitTime));
     }
 
     public function testMoreThan24Hrs()
@@ -85,16 +85,16 @@ class SPTest extends TestCase
         // 25 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-25 01:00:00';
-        $this->assertEquals(5020, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(5020, $this->parkingFee->getTotal($entryTime, $exitTime));
 
         // 47 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-25 23:00:00';
-        $this->assertEquals(5460, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(5460, $this->parkingFee->getTotal($entryTime, $exitTime));
 
         // 48 hrs
         $entryTime = '2021-05-24 00:00:00';
         $exitTime = '2021-05-26 00:00:00';
-        $this->assertEquals(10000, $this->parkingFee->get($entryTime, $exitTime));
+        $this->assertEquals(10000, $this->parkingFee->getTotal($entryTime, $exitTime));
     }
 }

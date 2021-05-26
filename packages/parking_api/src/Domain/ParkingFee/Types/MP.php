@@ -4,9 +4,13 @@ namespace Concrete\Package\ParkingApi\Src\Domain\ParkingFee\Types;
 
 use Concrete\Package\ParkingApi\Src\Domain\ParkingFee\ParkingFee;
 
+/**
+ * Class MP
+ * @package Concrete\Package\ParkingApi\Src\Domain\ParkingFee\Types
+ */
 class MP extends ParkingFee
 {
-    protected $rateBase = 40;
-    protected $rateHour = 60;
-    protected $rate24Hours = 5000;
+    protected $baseRate = 40;
+    protected $hourlyRate = 60;
+    protected $dailyRate = 5000;
 }

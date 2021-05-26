@@ -15,13 +15,10 @@ class ParkResponse extends AbstractResponse
 
     /**
      * ParkResponse constructor.
-     * @param ParkingSlot|null $parkingSlot
      */
-    public function __construct($parkingSlot = null)
+    public function __construct()
     {
-        if ($parkingSlot) {
-            $this->setParkingSlot($parkingSlot);
-        }
+
     }
 
     /**

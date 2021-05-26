@@ -11,12 +11,12 @@ class UnParkRequest implements Request
     protected $parkingSlotId;
 
     /**
-     * UnPark constructor.
-     * @param $parkingSlotId
+     * UnParkRequest constructor.
+     * @param array $request
      */
-    public function __construct($parkingSlotId)
+    public function __construct($request)
     {
-        $this->setParkingSlotId($parkingSlotId);
+        $this->setParkingSlotId($request['parkingSlotId']);
     }
 
     /**

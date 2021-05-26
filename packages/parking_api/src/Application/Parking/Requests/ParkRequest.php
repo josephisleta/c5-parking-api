@@ -14,18 +14,15 @@ class ParkRequest implements Request
     protected $color;
 
     /**
-     * Park constructor.
-     * @param string $entryPoint
-     * @param string $plateNumber
-     * @param string $type
-     * @param string $color
+     * ParkRequest constructor.
+     * @param array $request
      */
-    public function __construct($entryPoint, $plateNumber, $type, $color)
+    public function __construct($request)
     {
-        $this->setEntryPoint($entryPoint);
-        $this->setPlateNumber($plateNumber);
-        $this->setType($type);
-        $this->setColor($color);
+        $this->setEntryPoint($request['entryPoint']);
+        $this->setPlateNumber($request['plateNumber']);
+        $this->setType($request['type']);
+        $this->setColor($request['color']);
     }
 
     /**
