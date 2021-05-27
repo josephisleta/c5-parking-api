@@ -91,6 +91,20 @@ class ParkingSlots
     }
 
     /**
+     * @return bool
+     */
+    public function hasUnavailable()
+    {
+        /** @var ParkingSlot $slot */
+        foreach ($this->data as $slot) {
+            if (!$slot->getIsAvailable()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @param bool $entryPoint
      * @return array
      */

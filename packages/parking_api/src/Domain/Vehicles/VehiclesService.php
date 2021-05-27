@@ -10,6 +10,8 @@ class VehiclesService
 {
     private $vehiclesDao;
 
+    const VALID_TYPES = ['S', 'M', 'L'];
+
     /**
      * VehiclesService constructor.
      * @param VehiclesDao $vehiclesDao
@@ -56,7 +58,7 @@ class VehiclesService
      */
     public function isValidType($type)
     {
-        return $type && in_array($type, ['S', 'M', 'L']);
+        return $type && in_array($type, self::VALID_TYPES);
     }
 
     /**

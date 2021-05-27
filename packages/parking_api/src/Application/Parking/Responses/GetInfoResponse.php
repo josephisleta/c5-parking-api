@@ -2,6 +2,8 @@
 
 namespace Concrete\Package\ParkingApi\Src\Application\Parking\Responses;
 
+use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlots;
+
 /**
  * Class GetInfoResponse
  * @package Concrete\Package\ParkingApi\Src\Application\Parking\Responses
@@ -12,8 +14,9 @@ class GetInfoResponse extends AbstractResponse
     protected $errorCode;
 
     protected $exitOrExitQuantity;
-    /** @var array $parkingSlots */
-    protected $parkingSlotsArray;
+    /** @var ParkingSlots $parkingSlots */
+    protected $parkingSlots;
+    protected $entryPoint;
 
     /**
      * GetInfoResponse constructor.
@@ -40,19 +43,35 @@ class GetInfoResponse extends AbstractResponse
     }
 
     /**
-     * @return array
+     * @return ParkingSlots
      */
-    public function getParkingSlotsArray()
+    public function getParkingSlots()
     {
-        return $this->parkingSlotsArray;
+        return $this->parkingSlots;
     }
 
     /**
-     * @param array $parkingSlotsArray
+     * @param ParkingSlots $parkingSlots
      */
-    public function setParkingSlotsArray($parkingSlotsArray)
+    public function setParkingSlots($parkingSlots)
     {
-        $this->parkingSlotsArray = $parkingSlotsArray;
+        $this->parkingSlots = $parkingSlots;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntryPoint()
+    {
+        return $this->entryPoint;
+    }
+
+    /**
+     * @param $entryPoint
+     */
+    public function setEntryPoint($entryPoint)
+    {
+        $this->entryPoint = $entryPoint;
     }
 
     /**
@@ -62,7 +81,7 @@ class GetInfoResponse extends AbstractResponse
     {
         return [
             'entryOrExitQuantity' => $this->getExitOrExitQuantity(),
-            'parkingSlots' => $this->getParkingSlotsArray(),
+            'parkingSlots' => $this->getParkingSlots()->toArray($this->getEntryPoint()),
             'status' => $this->status
         ];
     }

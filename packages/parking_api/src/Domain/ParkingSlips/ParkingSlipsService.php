@@ -70,14 +70,12 @@ class ParkingSlipsService
      */
     public function process($parkingSlotId, $plateNumber, $latestParkingSlip = null)
     {
-        if ($latestParkingSlip) {
-            if ($this->isReturningVehicleByParkingSlip($latestParkingSlip)) {
-                $latestParkingSlip->setParkingSlotId($parkingSlotId);
-                $latestParkingSlip->setExitTime(null);
-                $latestParkingSlip->setFee(null);
-                $this->parkingSlipsDao->update($latestParkingSlip);
-                return;
-            }
+        if ($latestParkingSlip && $this->isReturningVehicleByParkingSlip($latestParkingSlip)) {
+            $latestParkingSlip->setParkingSlotId($parkingSlotId);
+            $latestParkingSlip->setExitTime(null);
+            $latestParkingSlip->setFee(null);
+            $this->parkingSlipsDao->update($latestParkingSlip);
+            return;
         }
 
         $parkingSlip = new ParkingSlip();

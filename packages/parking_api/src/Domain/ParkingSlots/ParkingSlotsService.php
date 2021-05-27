@@ -10,6 +10,8 @@ class ParkingSlotsService
 {
     private $parkingSlotsDao;
 
+    const VALID_TYPES = ['SP', 'MP', 'LP'];
+
     /**
      * ParkingSlotsService constructor.
      * @param ParkingSlotsDao $parkingSlotsDao
@@ -82,6 +84,15 @@ class ParkingSlotsService
     {
         $parkingSlot->setIsAvailable(false);
         $this->parkingSlotsDao->updateAvailability($parkingSlot);
+    }
+
+    /**
+     * @param $type
+     * @return bool
+     */
+    public function isValidType($type)
+    {
+        return $type && in_array($type, self::VALID_TYPES);
     }
 
 }

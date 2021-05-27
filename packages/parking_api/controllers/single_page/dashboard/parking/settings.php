@@ -3,12 +3,10 @@
 namespace Concrete\Package\ParkingApi\Controller\SinglePage\Dashboard\Parking;
 
 use Concrete\Core\Page\Controller\DashboardPageController;
+use Concrete\Core\Page\Page;
 use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap\ParkingMapDaoImpl;
 use Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlots\ParkingSlotsDaoImpl;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMap;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMapService;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlot;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlotsService;
+use Concrete\Package\ParkingApi\Src\Application\Parking\Dashboard\Settings as ApplicationParkingSettings;
 
 /**
  * Class Settings
@@ -16,94 +14,38 @@ use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlotsService;
  */
 class Settings extends DashboardPageController
 {
-    /** @var ParkingMapService $parkingMapService */
-    protected $parkingMapService;
-    /** @var ParkingSlotsService $parkingSlotsService */
-    protected $parkingSlotsService;
+    private $parkingSettings;
+
+    /**
+     * Settings constructor.
+     * @param Page $c
+     */
+    public function __construct(Page $c)
+    {
+        parent::__construct($c);
+
+        $parkingMapDao = new ParkingMapDaoImpl();
+        $parkingSlotsDao = new ParkingSlotsDaoImpl();
+        $this->parkingSettings = new ApplicationParkingSettings($parkingMapDao, $parkingSlotsDao);
+    }
 
     public function view()
     {
-        $parkingMapDao = new ParkingMapDaoImpl();
-        $this->parkingMapService = new ParkingMapService($parkingMapDao);
-
-        $parkingSlotsDao = new ParkingSlotsDaoImpl();
-        $this->parkingSlotsService = new ParkingSlotsService($parkingSlotsDao);
-
-        if ($this->post()) {
-            $this->handleForm();
-        }
-
-        $this->set('numberOfEntryExitPoints', $this->parkingMapService->getEntryOrExitQuantity() ?: ParkingMap::ENTRY_OR_EXIT_QUANTITY_DEFAULT);
-
-        $parkingSlots = $this->parkingSlotsService->getParkingSlots()->toArray();
-        if ($parkingSlots) {
-            $parkingSlots = json_encode($parkingSlots);
-        } else {
-            $parkingSlots = '[{"distancePoints":[1,2,3],"type":"SP"},{"distancePoints":[2,3,1],"type":"MP"},{"distancePoints":[3,1,2],"type":"LP"}]';
-        }
-
-        $this->set('parkingSlots', $parkingSlots);
+        $this->set('numberOfEntryExitPoints', $this->parkingSettings->getNumberOfEntryExitPoints());
+        $this->set('parkingSlots', $this->parkingSettings->getParkingSlots());
+        $this->set('parkingSlotsSample', $this->parkingSettings->getSampleParkingSlotsJson());
     }
 
-    private function handleForm()
+    public function submit()
     {
-        $errors = [];
-
-        if ($this->parkingMapService->isValidEntryOrExitQuantityInput($this->post('entry-exit-points'))) {
-            $errors[] = 'Please enter a valid entry/exit quantity. Should be an integer, minimum 3.';
-        }
-
-        $inputParkingSlots = json_decode($this->post('parking-slots'), true);
-
-        if (!$inputParkingSlots || !is_array($inputParkingSlots)) {
-            $errors[] = 'Please enter a properly formatted json for parking slots.';
-        }
-
-        if ($inputParkingSlots) {
-            foreach ($inputParkingSlots as $inputParkingSlot) {
-                $parkingSlot = new ParkingSlot($inputParkingSlot);
-                if (!$parkingSlot->hasValidType()) {
-                    $errors[] = 'Please make sure that the type values are valid.';
-                    break;
-                }
-
-                if (count($parkingSlot->getDistancePoints()) != $this->post('entry-exit-points')) {
-                    $errors[] = 'Please make sure that the number of distance points are matched with the number of entry/exit quantity.';
-                    break;
-                }
-
-                if (!is_array($parkingSlot->getDistancePoints())) {
-                    $errors[] = 'Please make sure that the distance points are arrays.';
-                    break;
-                }
-
-                foreach ($parkingSlot->getDistancePoints() as $distancePoint) {
-                    if (!is_int($distancePoint)) {
-                        $errors[] = 'Please make sure that the values in distance points are integers.';
-                        break 2;
-                    }
-                }
-            }
-        }
+        $errors = $this->parkingSettings->validateForm($this->post('entry-exit-points'), $this->post('parking-slots'));
 
         if (count($errors)) {
-            $this->set('notify', [
-                    'icon' => 'error',
-                    'title' => implode(' ', $errors),
-                ]
-            );
-
-            return;
+            $this->error->add(implode(' ', $errors));
+        } else {
+            $this->set('success', 'Successfully saved changes');
         }
 
-        $this->parkingMapService->saveEntryOrExitQuantity($this->post('entry-exit-points'));
-        $this->parkingSlotsService->save($inputParkingSlots);
-
-        $this->set('notify', [
-                'icon' => 'check',
-                'title' => 'Saved changes',
-            ]
-        );
+        $this->view();
     }
-
 }

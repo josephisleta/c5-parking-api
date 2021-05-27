@@ -132,6 +132,10 @@ class ParkingSlotsServiceTest extends TestCase
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlots', $parkingSlots);
 
         $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_1), $parkingSlots->getNearestForVehicleType(1, 'S'));
+
+        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_6), $parkingSlots->getNearestForVehicleType(2, 'S'));
+
+        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_5), $parkingSlots->getNearestForVehicleType(3, 'S'));
     }
 
     public function testGetNearestForVehicleTypeM()
@@ -141,6 +145,10 @@ class ParkingSlotsServiceTest extends TestCase
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlots', $parkingSlots);
 
         $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_2), $parkingSlots->getNearestForVehicleType(1, 'M'));
+
+        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_6), $parkingSlots->getNearestForVehicleType(2, 'M'));
+
+        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_5), $parkingSlots->getNearestForVehicleType(3, 'M'));
     }
 
     public function testGetNearestForVehicleTypeL()
@@ -150,6 +158,10 @@ class ParkingSlotsServiceTest extends TestCase
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlots', $parkingSlots);
 
         $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_3), $parkingSlots->getNearestForVehicleType(1, 'L'));
+
+        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_6), $parkingSlots->getNearestForVehicleType(2, 'L'));
+
+        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_6), $parkingSlots->getNearestForVehicleType(3, 'L'));
     }
 
     public function testGetNearestForVehicleTypeInvalid()

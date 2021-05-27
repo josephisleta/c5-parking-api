@@ -45,16 +45,16 @@ class GetInfoAction implements Action
         try {
             $this->validate($request);
 
-            $entryPoint = $request->getEntryPoint();
+            $parkingSlots = $this->parkingSlotsService->getParkingSlotsWithDetails();
 
+            $entryPoint = $request->getEntryPoint();
             if ($entryPoint) {
-                $parkingSlotsArray = $this->parkingSlotsService->getParkingSlotsWithDetails()->sortByEntryPoint($entryPoint)->toArray($entryPoint);
-            } else {
-                $parkingSlotsArray = $this->parkingSlotsService->getParkingSlotsWithDetails()->toArray();
+                $parkingSlots->sortByEntryPoint($entryPoint);
             }
 
             $this->response->setExitOrExitQuantity($this->parkingMapService->getEntryOrExitQuantity());
-            $this->response->setParkingSlotsArray($parkingSlotsArray);
+            $this->response->setEntryPoint($entryPoint);
+            $this->response->setParkingSlots($parkingSlots);
 
         } catch (\Exception $e) {
             $this->response->setErrorCode($e->getCode());
