@@ -61,9 +61,7 @@ class ParkAction implements Action
         try {
             $this->validate($request);
 
-            $vehicle = $this->vehiclesService->add($request->getPlateNumber(), $request->getType(), $request->getColor());
-
-            $latestParkingSlip = $this->parkingSlipsService->getLatestByPlateNumber($vehicle->getPlateNumber());
+            $latestParkingSlip = $this->parkingSlipsService->getLatestByPlateNumber($request->getPlateNumber());
 
             if ($latestParkingSlip && $latestParkingSlip->isOngoing()) {
                 throw new ParkingSlipsStillActiveException('Vehicle has not exited the parking yet.');
@@ -74,6 +72,8 @@ class ParkAction implements Action
             if (!$availableParkingSlots->count()) {
                 throw new ParkingSlotsException('No available parking slot at this time.');
             }
+
+            $vehicle = $this->vehiclesService->add($request->getPlateNumber(), $request->getType(), $request->getColor());
 
             $nearestParkingSlot = $availableParkingSlots->getNearestForVehicleType($request->getEntryPoint(), $vehicle->getType());
 
