@@ -98,12 +98,11 @@ class Parking extends Controller
     {
         $request = new UnParkRequest($this->input);
 
-        $parkingMapDao = new ParkingMapDaoImpl();
         $parkingSlotsDao = new ParkingSlotsDaoImpl();
         $vehiclesDao = new VehiclesDaoImpl();
         $parkingSlipsDao = new ParkingSlipsDaoImpl();
 
-        $unPark = new UnParkAction($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
+        $unPark = new UnParkAction($parkingSlotsDao, $vehiclesDao, $parkingSlipsDao);
 
         $response = $unPark->process($request);
 

@@ -22,6 +22,16 @@ class VehiclesService
     }
 
     /**
+     * @param $plateNumber
+     * @return Vehicle|null
+     */
+    public function getByPlateNumber($plateNumber)
+    {
+        $vehicle = $this->vehiclesDao->get($plateNumber);
+        return $vehicle ? new Vehicle($vehicle) : null;
+    }
+
+    /**
      * @param string $plateNumber
      * @param string $type
      * @param string $color
@@ -49,7 +59,7 @@ class VehiclesService
      */
     public function isValidPlateNumber($plateNumber)
     {
-        return $plateNumber && ctype_alnum($plateNumber);
+        return $plateNumber && (bool) preg_match('/^[a-zA-Z0-9]{1,8}$/', $plateNumber);
     }
 
     /**
@@ -67,10 +77,6 @@ class VehiclesService
      */
     public function isValidColor($color)
     {
-        if ($color) {
-            return (bool) preg_match('/^[a-zA-Z ]*$/', $color);
-        }
-
-        return true;
+        return (bool) preg_match('/^[a-zA-Z ]{0,14}$/', $color);
     }
 }

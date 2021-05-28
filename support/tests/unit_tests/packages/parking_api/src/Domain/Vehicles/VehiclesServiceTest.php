@@ -15,8 +15,8 @@ class VehiclesServiceTest extends TestCase
 
     public function testValidPlateNumber()
     {
-        $this->assertTrue($this->vehiclesService->isValidPlateNumber('QWERTY123'));
-        $this->assertTrue($this->vehiclesService->isValidPlateNumber('123QWERTY'));
+        $this->assertTrue($this->vehiclesService->isValidPlateNumber('QWERT123'));
+        $this->assertTrue($this->vehiclesService->isValidPlateNumber('123QWERT'));
         $this->assertTrue($this->vehiclesService->isValidPlateNumber('12345'));
         $this->assertTrue($this->vehiclesService->isValidPlateNumber('1'));
         $this->assertTrue($this->vehiclesService->isValidPlateNumber('ABC'));

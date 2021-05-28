@@ -25,7 +25,6 @@ class ParkingMapService
     public function getEntryOrExitQuantity()
     {
         $parkingMap = new ParkingMap($this->parkingMapDao->getEntryOrExitQuantity());
-
         return $parkingMap->getEntryOrExitQuantity();
     }
 

@@ -8,7 +8,7 @@ class ParkingSlipsServiceTest extends TestCase
 {
     private $parkingSlipsService;
 
-    const MOCK_PARKING_SLIP_ONGOING_DAO_1 = [
+    const DAO_PARKING_SLIP_ONGOING_1 = [
         'id' => 1,
         'parkingSlotId' => 100,
         'plateNumber' => 'MOCKPLATE123',
@@ -17,16 +17,7 @@ class ParkingSlipsServiceTest extends TestCase
         'fee' => null
     ];
 
-    const MOCK_PARKING_SLIP_EXITED_DAO_2 = [
-        'id' => 2,
-        'parkingSlotId' => 101,
-        'plateNumber' => 'MOCKPLATE321',
-        'entryTime' => '2021-05-20 00:00:00',
-        'exitTime' => '2021-05-20 01:00:00',
-        'fee' => 40
-    ];
-
-    const MOCK_PARKING_SLIP_ONGOING_DAO_3 = [
+    const DAO_PARKING_SLIP_ONGOING_2 = [
         'id' => 3,
         'parkingSlotId' => 101,
         'plateNumber' => 'MOCKPLATE999',
@@ -35,16 +26,25 @@ class ParkingSlipsServiceTest extends TestCase
         'fee' => null
     ];
 
+    const DAO_PARKING_SLIP_EXITED_1 = [
+        'id' => 2,
+        'parkingSlotId' => 101,
+        'plateNumber' => 'MOCKPLATE321',
+        'entryTime' => '2021-05-20 00:00:00',
+        'exitTime' => '2021-05-20 01:00:00',
+        'fee' => 40
+    ];
+
     public function setUp(): void
     {
         $parkingSlipsDaoMock = $this->getMockBuilder('Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap')
             ->setMethods(['getLatestByPlateNumber', 'getByParkingSlotId'])
             ->getMock();
 
-        $getLatestByPlateNumber = self::MOCK_PARKING_SLIP_ONGOING_DAO_1;
+        $getLatestByPlateNumber = self::DAO_PARKING_SLIP_ONGOING_1;
         $parkingSlipsDaoMock->method('getLatestByPlateNumber')->willReturn($getLatestByPlateNumber);
 
-        $getByParkingSlotId = [self::MOCK_PARKING_SLIP_EXITED_DAO_2, self::MOCK_PARKING_SLIP_ONGOING_DAO_3];
+        $getByParkingSlotId = [self::DAO_PARKING_SLIP_EXITED_1, self::DAO_PARKING_SLIP_ONGOING_2];
         $parkingSlipsDaoMock->method('getByParkingSlotId')->willReturn($getByParkingSlotId);
 
         $this->parkingSlipsService = new ParkingSlipsService($parkingSlipsDaoMock);
@@ -55,13 +55,15 @@ class ParkingSlipsServiceTest extends TestCase
         $parkingSlips = $this->parkingSlipsService->getByParkingSlotId(101);
 
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingSlips\ParkingSlips', $parkingSlips);
+
         $this->assertEquals(2, $parkingSlips->count());
+
         $this->assertEquals([
-            new ParkingSlip(self::MOCK_PARKING_SLIP_EXITED_DAO_2),
-            new ParkingSlip(self::MOCK_PARKING_SLIP_ONGOING_DAO_3)
+            new ParkingSlip(self::DAO_PARKING_SLIP_EXITED_1),
+            new ParkingSlip(self::DAO_PARKING_SLIP_ONGOING_2)
         ], $parkingSlips->getAll());
 
-        $this->assertEquals(new ParkingSlip(self::MOCK_PARKING_SLIP_ONGOING_DAO_3), $parkingSlips->getLatest());
+        $this->assertEquals(new ParkingSlip(self::DAO_PARKING_SLIP_ONGOING_2), $parkingSlips->getLatest());
     }
 
     public function testGetLatestByPlateNumber()

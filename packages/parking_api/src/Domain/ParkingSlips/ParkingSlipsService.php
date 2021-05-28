@@ -39,11 +39,7 @@ class ParkingSlipsService
     public function getLatestByPlateNumber($plateNumber)
     {
         $parkingSlip = $this->parkingSlipsDao->getLatestByPlateNumber($plateNumber);
-        if ($parkingSlip) {
-            return new ParkingSlip($parkingSlip);
-        }
-
-        return null;
+        return $parkingSlip ? new ParkingSlip($parkingSlip) : null;
     }
 
     /**

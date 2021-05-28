@@ -28,7 +28,7 @@ class GetInfoAction implements Action
      * @param ParkingMapDao $parkingMapDao
      * @param ParkingSlotsDao $parkingSlotsDao
      */
-    public function __construct(ParkingMapDao $parkingMapDao, ParkingSlotsDao $parkingSlotsDao)
+    public function __construct($parkingMapDao, $parkingSlotsDao)
     {
         $this->parkingMapService = new ParkingMapService($parkingMapDao);
         $this->parkingSlotsService = new ParkingSlotsService($parkingSlotsDao);

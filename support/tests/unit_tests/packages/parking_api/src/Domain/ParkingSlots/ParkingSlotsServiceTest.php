@@ -8,7 +8,7 @@ class ParkingSlotsServiceTest extends TestCase
 {
     private $parkingSlotsService;
 
-    const MOCK_AVAILABLE_LIST_DAO_1 = [
+    const DAO_AVAILABLE_SLOT_SP_1 = [
         'id' => 1,
         'type' => 'SP',
         'distancePoints' => 'a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}',
@@ -17,43 +17,43 @@ class ParkingSlotsServiceTest extends TestCase
         'parkingSlipId' => null
     ];
 
-    const MOCK_AVAILABLE_LIST_DAO_2 = [
+    const DAO_AVAILABLE_SLOT_SP_2 = [
         'id' => 2,
-        'type' => 'MP',
+        'type' => 'SP',
         'distancePoints' => 'a:3:{i:0;i:2;i:1;i:3;i:2;i:4;}',
         'isAvailable' => 1,
         'plateNumber' => null,
         'parkingSlipId' => null
     ];
 
-    const MOCK_AVAILABLE_LIST_DAO_3 = [
+    const DAO_AVAILABLE_SLOT_MP_1 = [
         'id' => 3,
-        'type' => 'LP',
+        'type' => 'MP',
         'distancePoints' => 'a:3:{i:0;i:3;i:1;i:4;i:2;i:5;}',
         'isAvailable' => 1,
         'plateNumber' => null,
         'parkingSlipId' => null
     ];
 
-    const MOCK_AVAILABLE_LIST_DAO_4 = [
+    const DAO_AVAILABLE_SLOT_MP_2 = [
         'id' => 4,
-        'type' => 'SP',
+        'type' => 'MP',
         'distancePoints' => 'a:3:{i:0;i:4;i:1;i:5;i:2;i:6;}',
         'isAvailable' => 1,
         'plateNumber' => null,
         'parkingSlipId' => null
     ];
 
-    const MOCK_AVAILABLE_LIST_DAO_5 = [
+    const DAO_AVAILABLE_SLOT_LP_1 = [
         'id' => 5,
-        'type' => 'MP',
+        'type' => 'LP',
         'distancePoints' => 'a:3:{i:0;i:5;i:1;i:6;i:2;i:1;}',
         'isAvailable' => 1,
         'plateNumber' => null,
         'parkingSlipId' => null
     ];
 
-    const MOCK_AVAILABLE_LIST_DAO_6 = [
+    const DAO_AVAILABLE_SLOT_LP_2 = [
         'id' => 6,
         'type' => 'LP',
         'distancePoints' => 'a:3:{i:0;i:6;i:1;i:1;i:2;i:2;}',
@@ -62,51 +62,35 @@ class ParkingSlotsServiceTest extends TestCase
         'parkingSlipId' => null
     ];
 
+    const DAO_AVAILABLE_SLOTS_LIST = [
+        self::DAO_AVAILABLE_SLOT_SP_1,
+        self::DAO_AVAILABLE_SLOT_SP_2,
+        self::DAO_AVAILABLE_SLOT_MP_1,
+        self::DAO_AVAILABLE_SLOT_MP_2,
+        self::DAO_AVAILABLE_SLOT_LP_1,
+        self::DAO_AVAILABLE_SLOT_LP_2
+    ];
+
     public function setUp(): void
     {
         $parkingSlotsDaoMock = $this->getMockBuilder('Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlots')
             ->setMethods(['getById', 'getAll', 'getAllAvailable', 'getParkingSlotsDetail'])
             ->getMock();
 
-        $getById = self::MOCK_AVAILABLE_LIST_DAO_1;
-        $parkingSlotsDaoMock->method('getById')->willReturn($getById);
+        $parkingSlotsDaoMock->method('getById')->willReturn(self::DAO_AVAILABLE_SLOT_SP_1);
 
-        $getAll = [
-            self::MOCK_AVAILABLE_LIST_DAO_1,
-            self::MOCK_AVAILABLE_LIST_DAO_2,
-            self::MOCK_AVAILABLE_LIST_DAO_3,
-            self::MOCK_AVAILABLE_LIST_DAO_4,
-            self::MOCK_AVAILABLE_LIST_DAO_5,
-            self::MOCK_AVAILABLE_LIST_DAO_6
-        ];
-        $parkingSlotsDaoMock->method('getAll')->willReturn($getAll);
+        $parkingSlotsDaoMock->method('getAll')->willReturn(self::DAO_AVAILABLE_SLOTS_LIST);
 
-        $getAllAvailable = [
-            self::MOCK_AVAILABLE_LIST_DAO_1,
-            self::MOCK_AVAILABLE_LIST_DAO_2,
-            self::MOCK_AVAILABLE_LIST_DAO_3,
-            self::MOCK_AVAILABLE_LIST_DAO_4,
-            self::MOCK_AVAILABLE_LIST_DAO_5,
-            self::MOCK_AVAILABLE_LIST_DAO_6
-        ];
-        $parkingSlotsDaoMock->method('getAllAvailable')->willReturn($getAllAvailable);
+        $parkingSlotsDaoMock->method('getAllAvailable')->willReturn(self::DAO_AVAILABLE_SLOTS_LIST);
 
-        $getParkingSlotsDetail = [
-            self::MOCK_AVAILABLE_LIST_DAO_1,
-            self::MOCK_AVAILABLE_LIST_DAO_2,
-            self::MOCK_AVAILABLE_LIST_DAO_3,
-            self::MOCK_AVAILABLE_LIST_DAO_4,
-            self::MOCK_AVAILABLE_LIST_DAO_5,
-            self::MOCK_AVAILABLE_LIST_DAO_6
-        ];
-        $parkingSlotsDaoMock->method('getParkingSlotsDetail')->willReturn($getParkingSlotsDetail);
+        $parkingSlotsDaoMock->method('getParkingSlotsDetail')->willReturn(self::DAO_AVAILABLE_SLOTS_LIST);
 
         $this->parkingSlotsService = new ParkingSlotsService($parkingSlotsDaoMock);
     }
 
     public function testGetById()
     {
-        $parkingSlot = new ParkingSlot([
+        $expectedParkingSlot = new ParkingSlot([
             'id' => 1,
             'type' => 'SP',
             'distancePoints' => 'a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}',
@@ -114,7 +98,7 @@ class ParkingSlotsServiceTest extends TestCase
             'plateNumber' => null,
             'parkingSlipId' => null
         ]);
-        $this->assertEquals($parkingSlot, $this->parkingSlotsService->getById(1));
+        $this->assertEquals($expectedParkingSlot, $this->parkingSlotsService->getById(1));
     }
 
     public function testGetParkingSlots()
@@ -131,11 +115,14 @@ class ParkingSlotsServiceTest extends TestCase
 
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlots', $parkingSlots);
 
-        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_1), $parkingSlots->getNearestForVehicleType(1, 'S'));
+        $expectedParkingSlot = new ParkingSlot(self::DAO_AVAILABLE_SLOT_SP_1);
+        $this->assertEquals($expectedParkingSlot, $parkingSlots->getNearestForVehicleType(1, 'S'));
 
-        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_6), $parkingSlots->getNearestForVehicleType(2, 'S'));
+        $expectedParkingSlot = new ParkingSlot(self::DAO_AVAILABLE_SLOT_LP_2);
+        $this->assertEquals($expectedParkingSlot, $parkingSlots->getNearestForVehicleType(2, 'S'));
 
-        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_5), $parkingSlots->getNearestForVehicleType(3, 'S'));
+        $expectedParkingSlot = new ParkingSlot(self::DAO_AVAILABLE_SLOT_LP_1);
+        $this->assertEquals($expectedParkingSlot, $parkingSlots->getNearestForVehicleType(3, 'S'));
     }
 
     public function testGetNearestForVehicleTypeM()
@@ -144,11 +131,14 @@ class ParkingSlotsServiceTest extends TestCase
 
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlots', $parkingSlots);
 
-        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_2), $parkingSlots->getNearestForVehicleType(1, 'M'));
+        $expectedParkingSlot = new ParkingSlot(self::DAO_AVAILABLE_SLOT_MP_1);
+        $this->assertEquals($expectedParkingSlot, $parkingSlots->getNearestForVehicleType(1, 'M'));
 
-        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_6), $parkingSlots->getNearestForVehicleType(2, 'M'));
+        $expectedParkingSlot = new ParkingSlot(self::DAO_AVAILABLE_SLOT_LP_2);
+        $this->assertEquals($expectedParkingSlot, $parkingSlots->getNearestForVehicleType(2, 'M'));
 
-        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_5), $parkingSlots->getNearestForVehicleType(3, 'M'));
+        $expectedParkingSlot = new ParkingSlot(self::DAO_AVAILABLE_SLOT_LP_1);
+        $this->assertEquals($expectedParkingSlot, $parkingSlots->getNearestForVehicleType(3, 'M'));
     }
 
     public function testGetNearestForVehicleTypeL()
@@ -157,11 +147,14 @@ class ParkingSlotsServiceTest extends TestCase
 
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlots', $parkingSlots);
 
-        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_3), $parkingSlots->getNearestForVehicleType(1, 'L'));
+        $expectedParkingSlot = new ParkingSlot(self::DAO_AVAILABLE_SLOT_LP_1);
+        $this->assertEquals($expectedParkingSlot, $parkingSlots->getNearestForVehicleType(1, 'L'));
 
-        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_6), $parkingSlots->getNearestForVehicleType(2, 'L'));
+        $expectedParkingSlot = new ParkingSlot(self::DAO_AVAILABLE_SLOT_LP_2);
+        $this->assertEquals($expectedParkingSlot, $parkingSlots->getNearestForVehicleType(2, 'L'));
 
-        $this->assertEquals(new ParkingSlot(self::MOCK_AVAILABLE_LIST_DAO_6), $parkingSlots->getNearestForVehicleType(3, 'L'));
+        $expectedParkingSlot = new ParkingSlot(self::DAO_AVAILABLE_SLOT_LP_1);
+        $this->assertEquals($expectedParkingSlot, $parkingSlots->getNearestForVehicleType(3, 'L'));
     }
 
     public function testGetNearestForVehicleTypeInvalid()
@@ -178,6 +171,7 @@ class ParkingSlotsServiceTest extends TestCase
         $parkingSlots = $this->parkingSlotsService->getAllAvailable();
 
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlots', $parkingSlots);
+
         $this->assertEquals(6, $parkingSlots->count());
     }
 
@@ -186,6 +180,7 @@ class ParkingSlotsServiceTest extends TestCase
         $parkingSlots = $this->parkingSlotsService->getParkingSlotsWithDetails();
 
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlots', $parkingSlots);
+
         $this->assertEquals(6, $parkingSlots->count());
     }
 }

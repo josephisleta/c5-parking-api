@@ -42,7 +42,7 @@ class ParkAction implements Action
      * @param VehiclesDao $vehiclesDao
      * @param ParkingSlipsDao $parkingSlipsDao
      */
-    public function __construct(ParkingMapDao $parkingMapDao, ParkingSlotsDao $parkingSlotsDao, VehiclesDao $vehiclesDao, ParkingSlipsDao $parkingSlipsDao)
+    public function __construct($parkingMapDao, $parkingSlotsDao, $vehiclesDao, $parkingSlipsDao)
     {
         $this->parkingMapService = new ParkingMapService($parkingMapDao);
         $this->parkingSlotsService = new ParkingSlotsService($parkingSlotsDao);
@@ -120,7 +120,7 @@ class ParkAction implements Action
         }
 
         if (!$this->vehiclesService->isValidPlateNumber($request->getPlateNumber())) {
-            throw new ParkingFunctionsParkPlateNumberInvalidException('Please enter a valid plate number (alphanumeric)');
+            throw new ParkingFunctionsParkPlateNumberInvalidException('Please enter a valid plate number (alphanumeric 1-8 characters)');
         }
 
         if (!$this->vehiclesService->isValidType($request->getType())) {

@@ -10,7 +10,7 @@ class ParkingMapServiceTest extends TestCase
     public function setUp(): void
     {
         $parkingMapDaoMock = $this->getMockBuilder('Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap')
-            ->setMethods(['getEntryOrExitQuantity', 'saveEntryOrExitQuantity'])
+            ->setMethods(['update', 'add', 'getEntryOrExitQuantity'])
             ->getMock();
 
         $getEntryOrExitQuantity = [

@@ -8,7 +8,7 @@ namespace Concrete\Package\ParkingApi\Src\Application\Parking\Requests;
  */
 class UnParkRequest implements Request
 {
-    protected $parkingSlotId;
+    protected $plateNumber;
 
     /**
      * UnParkRequest constructor.
@@ -16,23 +16,23 @@ class UnParkRequest implements Request
      */
     public function __construct($request)
     {
-        $this->setParkingSlotId($request['parkingSlotId']);
+        $this->setPlateNumber($request['plateNumber']);
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getParkingSlotId()
+    public function getPlateNumber()
     {
-        return $this->parkingSlotId;
+        return $this->plateNumber;
     }
 
     /**
-     * @param mixed $parkingSlotId
+     * @param string $plateNumber
      */
-    public function setParkingSlotId($parkingSlotId)
+    public function setPlateNumber($plateNumber)
     {
-        $this->parkingSlotId = $parkingSlotId;
+        $this->plateNumber = $plateNumber;
     }
 
 }

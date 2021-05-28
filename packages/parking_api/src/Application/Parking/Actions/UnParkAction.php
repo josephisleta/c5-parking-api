@@ -4,8 +4,6 @@ namespace Concrete\Package\ParkingApi\Src\Application\Parking\Actions;
 
 use Concrete\Package\ParkingApi\Src\Application\Parking\Requests\UnParkRequest as Request;
 use Concrete\Package\ParkingApi\Src\Application\Parking\Responses\UnParkResponse;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMapDao;
-use Concrete\Package\ParkingApi\Src\Domain\ParkingMap\ParkingMapService;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlips\ParkingSlipsDao;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlips\ParkingSlipsService;
 use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlotsDao;
@@ -13,10 +11,11 @@ use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlotsService;
 use Concrete\Package\ParkingApi\Src\Domain\Vehicles\VehiclesDao;
 use Concrete\Package\ParkingApi\Src\Domain\Vehicles\VehiclesService;
 use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingActionInvalidRequestException;
+use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingActionVehicleNotExistingException;
 use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingFunctionsMissingArgumentException;
+use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingFunctionsParkPlateNumberInvalidException;
+use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlipsAlreadyExitedException;
 use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlipsDoesNotExistException;
-use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlotAlreadyEmptyException;
-use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlotDoesNotExistException;
 
 /**
  * Class UnPark
@@ -24,7 +23,6 @@ use Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlotDoesNotExistEx
  */
 class UnParkAction implements Action
 {
-    private $parkingMapService;
     private $parkingSlotsService;
     private $vehiclesService;
     private $parkingSlipsService;
@@ -33,15 +31,13 @@ class UnParkAction implements Action
     private $response;
 
     /**
-     * UnPark constructor.
-     * @param ParkingMapDao $parkingMapDao
+     * UnParkAction constructor.
      * @param ParkingSlotsDao $parkingSlotsDao
      * @param VehiclesDao $vehiclesDao
      * @param ParkingSlipsDao $parkingSlipsDao
      */
-    public function __construct(ParkingMapDao $parkingMapDao, ParkingSlotsDao $parkingSlotsDao, VehiclesDao $vehiclesDao, ParkingSlipsDao $parkingSlipsDao)
+    public function __construct($parkingSlotsDao, $vehiclesDao, $parkingSlipsDao)
     {
-        $this->parkingMapService = new ParkingMapService($parkingMapDao);
         $this->parkingSlotsService = new ParkingSlotsService($parkingSlotsDao);
         $this->vehiclesService = new VehiclesService($vehiclesDao);
         $this->parkingSlipsService = new ParkingSlipsService($parkingSlipsDao);
@@ -58,13 +54,17 @@ class UnParkAction implements Action
         try {
             $this->validate($request);
 
-            $latestParkingSlip = $this->parkingSlipsService->getByParkingSlotId($request->getParkingSlotId())->getLatest();
+            $latestParkingSlip = $this->parkingSlipsService->getLatestByPlateNumber($request->getPlateNumber());
 
             if (!$latestParkingSlip) {
-                throw new ParkingSlipsDoesNotExistException('Parking slip for parking slot id ' . $request->getParkingSlotId() . ' does not exist.');
+                throw new ParkingSlipsDoesNotExistException('Parking slip for plate number ' . $request->getPlateNumber() . ' does not exist.');
             }
 
-            $parkingSlot = $this->parkingSlotsService->getById($request->getParkingSlotId());
+            if (!$latestParkingSlip->isOngoing()) {
+                throw new ParkingSlipsAlreadyExitedException('The vehicle has already left the parking lot.');
+            }
+
+            $parkingSlot = $this->parkingSlotsService->getById($latestParkingSlip->getParkingSlotId());
 
             $parkingSlip = $this->parkingSlipsService->exitParkingSlip($latestParkingSlip, $parkingSlot->getType());
 
@@ -84,9 +84,9 @@ class UnParkAction implements Action
      * @param Request $request
      * @return mixed|void
      * @throws ParkingActionInvalidRequestException
+     * @throws ParkingActionVehicleNotExistingException
      * @throws ParkingFunctionsMissingArgumentException
-     * @throws ParkingSlotAlreadyEmptyException
-     * @throws ParkingSlotDoesNotExistException
+     * @throws ParkingFunctionsParkPlateNumberInvalidException
      */
     public function validate($request)
     {
@@ -94,18 +94,18 @@ class UnParkAction implements Action
             throw new ParkingActionInvalidRequestException('Invalid request. Should be an instance of Request.');
         }
 
-        if (!$request->getParkingSlotId()) {
-            throw new ParkingFunctionsMissingArgumentException('Please enter the parking slot id');
+        if (!$request->getPlateNumber()) {
+            throw new ParkingFunctionsMissingArgumentException('Please enter the plate number.');
         }
 
-        $parkingSlot = $this->parkingSlotsService->getById($request->getParkingSlotId());
-
-        if (!$parkingSlot->getId()) {
-            throw new ParkingSlotDoesNotExistException('Parking slot id ' . $request->getParkingSlotId() . ' does not exist.');
+        if (!$this->vehiclesService->isValidPlateNumber($request->getPlateNumber())) {
+            throw new ParkingFunctionsParkPlateNumberInvalidException('Please enter a valid plate number (alphanumeric 1-8 characters)');
         }
 
-        if ($parkingSlot->getIsAvailable()) {
-            throw new ParkingSlotAlreadyEmptyException('Parking slot id ' . $request->getParkingSlotId() . ' is already empty.');
+        $vehicle = $this->vehiclesService->getByPlateNumber($request->getPlateNumber());
+
+        if (!$vehicle) {
+            throw new ParkingActionVehicleNotExistingException('The plate number does not exist in our system.');
         }
     }
 }
