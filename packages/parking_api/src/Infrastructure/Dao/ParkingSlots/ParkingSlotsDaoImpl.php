@@ -63,15 +63,15 @@ class ParkingSlotsDaoImpl implements ParkingSlotsDao
                             FROM parkingSlots slo 
                             LEFT JOIN vehicles v ON v.plateNumber = (
                                 SELECT sli.plateNumber
-                                FROM parkingSlip sli
+                                FROM parkingSlips sli
                                 WHERE sli.parkingSlotId = slo.id
                                 AND sli.exitTime IS NULL
                                 ORDER BY sli.entryTime DESC
                                 LIMIT 1
                             )
-                            LEFT JOIN parkingSlip sli ON sli.id = (
+                            LEFT JOIN parkingSlips sli ON sli.id = (
                                 SELECT sli.id
-                                FROM parkingSlip sli
+                                FROM parkingSlips sli
                                 WHERE sli.plateNumber = v.plateNumber
                                 AND sli.exitTime IS NULL
                                 ORDER BY sli.entryTime DESC

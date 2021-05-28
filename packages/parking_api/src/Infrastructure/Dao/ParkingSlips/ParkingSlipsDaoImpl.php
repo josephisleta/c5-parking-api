@@ -13,7 +13,7 @@ use Database;
 class ParkingSlipsDaoImpl implements ParkingSlipsDao
 {
     private $db;
-    private $tableName = 'parkingSlip';
+    private $tableName = 'parkingSlips';
 
     /**
      * ParkingSlipDaoImpl constructor.

@@ -38,12 +38,14 @@ class Settings extends DashboardPageController
 
     public function submit()
     {
-        $errors = $this->parkingSettings->validateForm($this->post('entry-exit-points'), $this->post('parking-slots'));
+        if ($this->post()) {
+            $errors = $this->parkingSettings->validateForm($this->post('entry-exit-points'), $this->post('parking-slots'));
 
-        if (count($errors)) {
-            $this->error->add(implode(' ', $errors));
-        } else {
-            $this->set('success', 'Successfully saved changes');
+            if (count($errors)) {
+                $this->error->add(implode(' ', $errors));
+            } else {
+                $this->set('success', 'Successfully saved changes');
+            }
         }
 
         $this->view();
