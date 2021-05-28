@@ -4,7 +4,7 @@ use Concrete\Package\ParkingApi\Src\Application\Parking\Actions\GetInfoAction;
 use Concrete\Package\ParkingApi\Src\Application\Parking\Requests\GetInfoRequest;
 use PHPUnit\Framework\TestCase;
 
-class GetInfo extends TestCase
+class GetInfoTest extends TestCase
 {
     const DAO_PARKING_MAP_3 = [
         'id' => 1,
@@ -73,6 +73,24 @@ class GetInfo extends TestCase
         $parkingSlotsDaoMock->method('getParkingSlotsDetail')->willReturn($parkingSlotsData);
 
         return $parkingSlotsDaoMock;
+    }
+
+    public function testInvalidRequestNotObj()
+    {
+        $request = [];
+
+        $getInfoAction = new GetInfoAction(
+            $this->getParkingMapDaoMock(null),
+            $this->getParkingSlotsDaoMock(null)
+        );
+
+        $response = $getInfoAction->process($request);
+
+        $expectedResponse = [
+            'errorMessage' => 'Invalid request. Should be an instance of Request.',
+            'errorCode' => 500
+        ];
+        $this->assertEquals(json_encode($expectedResponse), $response->toJson());
     }
 
     public function testEmptyParkingLotData()

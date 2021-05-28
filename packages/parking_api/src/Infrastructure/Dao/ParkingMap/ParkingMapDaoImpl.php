@@ -8,6 +8,7 @@ use Database;
 /**
  * Class ParkingMapDaoImpl
  * @package Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap
+ * @codeCoverageIgnore
  */
 class ParkingMapDaoImpl implements ParkingMapDao
 {

@@ -12,6 +12,7 @@ use Concrete\Package\ParkingApi\Src\Domain\ParkingSlots\ParkingSlotsService;
 /**
  * Class Settings
  * @package Concrete\Package\ParkingApi\Src\Application\Parking\Dashboard
+ * @codeCoverageIgnore
  */
 class Settings
 {

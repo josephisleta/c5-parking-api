@@ -16,6 +16,13 @@ class LPTest extends TestCase
         $this->parkingFee = ParkingFeeService::build(self::PARKING_SLOT_TYPE);
     }
 
+    public function testInvalidType()
+    {
+        $this->expectException('Concrete\Package\ParkingApi\Src\Exceptions\Parking\ParkingSlotTypeInvalidException');
+        $invalidType = 'AB';
+        $parkingFee = ParkingFeeService::build($invalidType);
+    }
+
     public function testClass()
     {
         $this->assertInstanceOf('Concrete\Package\ParkingApi\Src\Domain\ParkingFee\ParkingFee', $this->parkingFee);

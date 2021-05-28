@@ -9,6 +9,7 @@ use Database;
 /**
  * Class ParkingSlipDaoImpl
  * @package Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlips
+ * @codeCoverageIgnore
  */
 class ParkingSlipsDaoImpl implements ParkingSlipsDao
 {

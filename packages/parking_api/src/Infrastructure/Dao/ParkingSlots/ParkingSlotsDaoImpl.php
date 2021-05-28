@@ -9,6 +9,7 @@ use Database;
 /**
  * Class ParkingSlotsDaoImpl
  * @package Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingSlots
+ * @codeCoverageIgnore
  */
 class ParkingSlotsDaoImpl implements ParkingSlotsDao
 {

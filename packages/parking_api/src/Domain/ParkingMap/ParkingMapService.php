@@ -30,6 +30,7 @@ class ParkingMapService
 
     /**
      * @param int $quantity
+     * @codeCoverageIgnore
      */
     public function saveEntryOrExitQuantity($quantity)
     {

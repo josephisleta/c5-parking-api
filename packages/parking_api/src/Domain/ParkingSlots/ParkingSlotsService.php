@@ -56,6 +56,7 @@ class ParkingSlotsService
 
     /**
      * @param array $parkingSlots
+     * @codeCoverageIgnore
      */
     public function save($parkingSlots)
     {
@@ -70,6 +71,7 @@ class ParkingSlotsService
 
     /**
      * @param ParkingSlot $parkingSlot
+     * @codeCoverageIgnore
      */
     public function updateAsAvailable($parkingSlot)
     {
@@ -79,6 +81,7 @@ class ParkingSlotsService
 
     /**
      * @param ParkingSlot $parkingSlot
+     * @codeCoverageIgnore
      */
     public function updateAsUnavailable($parkingSlot)
     {

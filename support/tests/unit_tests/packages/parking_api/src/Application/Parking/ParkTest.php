@@ -162,6 +162,18 @@ class ParkTest extends TestCase
         return $parkingSlipsDaoMock;
     }
 
+    public function testInvalidRequestNotObject()
+    {
+        $request = [];
+        $response = $this->parkAction->process($request);
+
+        $expectedReponse = [
+            'errorMessage' => 'Invalid request. Should be an instance of Request.',
+            'errorCode' => 500
+        ];
+        $this->assertEquals(json_encode($expectedReponse), $response->toJson());
+    }
+
     public function testInvalidRequest()
     {
         $invalidInputs = [
@@ -184,7 +196,6 @@ class ParkTest extends TestCase
             ];
             $this->assertEquals(json_encode($expectedReponse), $response->toJson());
         }
-
     }
 
     public function testInvalidEntryPoint()

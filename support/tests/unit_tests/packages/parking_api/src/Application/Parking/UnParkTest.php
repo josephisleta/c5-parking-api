@@ -91,6 +91,19 @@ class UnParkTest extends TestCase
         return $parkingSlipsDaoMock;
     }
 
+    public function testInvalidRequestNotObject()
+    {
+        $request = [];
+
+        $response = $this->unParkAction->process($request);
+
+        $expectedResponse = [
+            'errorMessage' => 'Invalid request. Should be an instance of Request.',
+            'errorCode' => 500
+        ];
+        $this->assertEquals(json_encode($expectedResponse), $response->toJson());
+    }
+
     public function testInvalidRequest()
     {
         $invalidRequests = [
@@ -220,5 +233,8 @@ class UnParkTest extends TestCase
         $this->assertEquals('TEST123', $response->getParkingSlip()->getPlateNumber());
         $this->assertNotEmpty($response->getParkingSlip()->getEntryTime());
         $this->assertNotEmpty($response->getParkingSlip()->getFee());
+
+        $this->assertArrayHasKey('parkingSlip', $response->getSuccessBody());
+        $this->assertArrayHasKey('status', $response->getSuccessBody());
     }
 }

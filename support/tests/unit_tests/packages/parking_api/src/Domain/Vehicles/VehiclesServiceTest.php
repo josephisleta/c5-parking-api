@@ -1,5 +1,6 @@
 <?php
 
+use Concrete\Package\ParkingApi\Src\Domain\Vehicles\Vehicle;
 use Concrete\Package\ParkingApi\Src\Domain\Vehicles\VehiclesService;
 use PHPUnit\Framework\TestCase;
 
@@ -7,9 +8,20 @@ class VehiclesServiceTest extends TestCase
 {
     private $vehiclesService;
 
+    const DAO_VEHICLE = [
+        'plateNumber' => 'TEST123',
+        'type' => 'M',
+        'color' => 'red'
+    ];
+
     public function setUp(): void
     {
-        $parkingMapDaoMock = $this->getMockBuilder('Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap')->getMock();
+        $parkingMapDaoMock = $this->getMockBuilder('Concrete\Package\ParkingApi\Src\Infrastructure\Dao\ParkingMap')
+            ->setMethods(['get'])
+            ->getMock();
+
+        $parkingMapDaoMock->method('get')->willReturn(self::DAO_VEHICLE);
+
         $this->vehiclesService = new VehiclesService($parkingMapDaoMock);
     }
 
@@ -86,5 +98,20 @@ class VehiclesServiceTest extends TestCase
         $this->assertTrue($this->vehiclesService->isValidColor(''));
         $this->assertTrue($this->vehiclesService->isValidColor(null));
         $this->assertTrue($this->vehiclesService->isValidColor(false));
+    }
+
+    public function testGet()
+    {
+        $vehicle = $this->vehiclesService->getByPlateNumber('TEST123');
+
+        $expectedVehicleData = [
+            'plateNumber' => 'TEST123',
+            'type' => 'M',
+            'color' => 'red'
+        ];
+        $expectedVehicle = new Vehicle($expectedVehicleData);
+        $this->assertEquals($expectedVehicle, $vehicle);
+
+        $this->assertEquals($expectedVehicleData, $vehicle->toArray());
     }
 }
