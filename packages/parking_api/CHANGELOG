@@ -1,0 +1,6 @@
+0.2
++ Install dashboard parking settings
++ Add db tables for parkingMap, parkingSlots, vehicles, parkingSlips
+
+0.1
++ Initial version

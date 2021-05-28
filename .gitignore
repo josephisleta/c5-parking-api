@@ -1,3 +1,6 @@
 .idea/
 application/files/
 application/files
+support/tests/vendor/
+
+.phpunit.result.cache
